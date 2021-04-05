@@ -2,6 +2,9 @@
 @section('title', 'Vendor')
 @section('page_title', 'Add Vendor')
 @section('customcss')
+<!-- <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.js"></script> -->
+<!-- <script src="http://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha256-OFRAJNoaD8L3Br5lglV7VyLRf0itmoBzWUoM+Sji4/8=" crossorigin="anonymous"></script> -->
+<link href="http://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.min.css" rel="stylesheet" />
 
 @endsection
 @section('content')
@@ -61,6 +64,16 @@
                     </div>
                     <div class="col-md-6">
                         <div class="form-group">
+                            <label for="gst_no">Service </label> <span  style="color:red" id="service_err"> </span>
+                            <select class="form-control" name="service[]" id="service" multiple>
+                                @foreach($services as $s)
+                                <option value="{{ $s->id }}">{{ $s->service_name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
                             <label for="">Aadhar Image</label>
                             <div class="custom-file">
                             <input type="file" name="aadhar_img" class="custom-file-input" id="customFile">
@@ -86,6 +99,7 @@
                             </div>
                         </div>
                     </div>
+                    <div class="col-md-6"></div>
                     <div class="col-md-6">
                         <div class="form-group">
                             <label for="password">Password</label> <span  style="color:red" id="pwd_err"> </span>
@@ -116,11 +130,18 @@
 
 @endsection
 @section('customjs')
+<script src="http://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js"></script>
 <script>
 $.ajaxSetup({
     headers: {
         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
     }
+});
+
+$(document).ready(function() {
+    // alert(‘1’);
+    $('#service').select2();
+
 });
 
 $('body').on('click', '#submitButton', function () {
@@ -132,6 +153,8 @@ $('body').on('click', '#submitButton', function () {
     var busi_address = $("#busi_address").val();
     var password = $("#password").val();
     var confirmPassword = $("#con_pwd").val();
+    var service = $('#service').val();
+    // alert(service);
     if (owner_name=="") {
         $("#owner_err").fadeIn().html("Required");
         setTimeout(function(){ $("#owner_err").fadeOut(); }, 3000);
@@ -166,6 +189,12 @@ $('body').on('click', '#submitButton', function () {
         $("#address_err").fadeIn().html("Required");
         setTimeout(function(){ $("#address_err").fadeOut(); }, 3000);
         $("#busi_address").focus();
+        return false;
+    }
+    if (service=="") {
+        $("#service_err").fadeIn().html("Required");
+        setTimeout(function(){ $("#service_err").fadeOut(); }, 3000);
+        $("#service").focus();
         return false;
     }
     if (password=="") {

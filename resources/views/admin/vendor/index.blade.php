@@ -25,40 +25,40 @@
     </div>
 </div>
 <div class="row mb-3">
-<div class="col-lg-12">
-    <div class="card mb-4">
-        <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-            <h6 class="m-0 font-weight-bold text-primary">Vendor List</h6>
-        </div>
-        <div class="table-responsive p-3">
-            <table class="table align-items-center table-flush table-hover" id="dataTableHover">
-                <thead class="thead-light">
-                    <tr>
-                        <th>Business Owner Name</th>
-                        <th>Business Name</th>
-                        <th>Business Type</th>
-                        <th>Username</th>
-                        <th>Password</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                <tfoot>
-                    <tr>
-                        <th>Business Owner Name</th>
-                        <th>Business Name</th>
-                        <th>Business Type</th>
-                        <th>Username</th>
-                        <th>Password</th>
-                        <th>Action</th>
-                    </tr>
-                </tfoot>
-                <tbody>
-                    
-                </tbody>
-            </table>
+    <div class="col-lg-12">
+        <div class="card mb-4">
+            <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                <h6 class="m-0 font-weight-bold text-primary">Vendor List</h6>
+            </div>
+            <div class="table-responsive p-3">
+                <table class="table align-items-center table-flush table-hover" id="dataTableHover">
+                    <thead class="thead-light">
+                        <tr>
+                            <th>Business Owner Name</th>
+                            <th>Business Name</th>
+                            <th>Business Type</th>
+                            <th>Username</th>
+                            <th>Password</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tfoot>
+                        <tr>
+                            <th>Business Owner Name</th>
+                            <th>Business Name</th>
+                            <th>Business Type</th>
+                            <th>Username</th>
+                            <th>Password</th>
+                            <th>Action</th>
+                        </tr>
+                    </tfoot>
+                    <tbody>
+                        
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
-</div>
 </div>
 <!--Row-->
 

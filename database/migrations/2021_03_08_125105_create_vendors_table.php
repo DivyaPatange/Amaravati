@@ -25,6 +25,7 @@ class CreateVendorsTable extends Migration
             $table->string('aadhar_img')->nullable();
             $table->string('pan_img')->nullable();
             $table->string('shop_img')->nullable();
+            $table->string('services')->nullable();
             $table->string('username');
             $table->string('password');
             $table->string('show_pwd');
