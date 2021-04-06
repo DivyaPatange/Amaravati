@@ -89,6 +89,7 @@
                             <th>Sr. No.</th>
                             <th>Service</th>
                             <th>Category </th>
+                            <th>Parent Category</th>
                             <th>Status</th>
                             <th>Action</th>
                         </tr>
@@ -97,7 +98,8 @@
                         <tr>
                             <th>Sr. No.</th>
                             <th>Service</th>
-                            <th>Service Type</th>
+                            <th>Category</th>
+                            <th>Parent Category</th>
                             <th>Status</th>
                             <th>Action</th>
                         </tr>
