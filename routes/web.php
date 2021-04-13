@@ -57,6 +57,7 @@ Route::prefix('admin')->name('admin.')->group(function() {
     Route::post('/get-service', [ServiceController::class, 'getService'])->name('get.service');
     Route::post('/service/update', [ServiceController::class, 'updateService']);
     Route::resource('categories', CategoryController::class);
+    Route::get('/get-category', [CategoryController::class, 'getCategory'])->name('get.category');
 });
 
 Auth::routes();

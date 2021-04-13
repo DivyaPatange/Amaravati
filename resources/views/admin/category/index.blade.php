@@ -69,7 +69,11 @@
                             </select>
                         </div>
                     </div>
-                    <button type="button" id="submitButton" class="btn btn-primary">Submit</button>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <button type="button" id="submitButton" class="btn btn-primary">Submit</button>
+                        </div>
+                    </div>
                 </form>
             </div>
         </div>
@@ -83,12 +87,12 @@
                 <h6 class="m-0 font-weight-bold text-primary">Category List</h6>
             </div>
             <div class="table-responsive p-3">
-                <table class="table align-items-center table-flush table-hover" id="dataTableHover">
+            <table class="table align-items-center table-flush table-hover" id="dataTableHover">
                     <thead class="thead-light">
                         <tr>
                             <th>Sr. No.</th>
                             <th>Service</th>
-                            <th>Category </th>
+                            <th>Category</th>
                             <th>Parent Category</th>
                             <th>Status</th>
                             <th>Action</th>
@@ -125,22 +129,39 @@
             <form method="POST" >
                 <div class="modal-body">
                     <div class="form-group">
-                        <label for="edit_service_name">Service Name<span style="color:red;">*</span></label><span  style="color:red" id="edit_service_err"> </span>
-                        <input type="text" name="service_name" id="edit_service_name" class="form-control" value="">
-                    </div>
-                    <div class="form-group">
-                        <label for="edit_type">Service Type</label> <span  style="color:red" id="edit_type_err"> </span>
-                        <select name="service_type" class="form-control" id="edit_type">
-                            <option value="">-Select Service Type-</option>
-                            <option value="Bookable">Bookable</option>
-                            <option value="Buyable">Buyable</option>
+                        <label for="service_name">Service</label> <span  style="color:red" id="service_err"> </span>
+                        <select name="service_name" class="form-control" id="edit_service_name">
+                            <option value="">-Select Service-</option>
+                            @foreach($services as $s)
+                            <option value="{{ $s->id }}">{{ $s->service_name }}</option>
+                            @endforeach
                         </select>
                     </div>
                     <div class="form-group">
-                        <label for="edit_status">Status<span style="color:red;">*</span></label><span  style="color:red" id="edit_status_err"> </span>
-                        <select name="status" id="edit_status" class="form-control">
+                        <label for="type">Category</label> <span  style="color:red" id="cat_err"> </span>
+                        <input type="text" name="category" id="edit_category" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label for="status">Status</label> <span  style="color:red" id="status_err"> </span>
+                        <select name="status" class="form-control" id="status">
+                            <option value="">-Select Status-</option>
                             <option value="Active">Active</option>
                             <option value="Inactive">Inactive</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <div class="custom-control custom-checkbox">
+                            <input type="checkbox" class="custom-control-input" id="is_parent" value="1">
+                            <label class="custom-control-label" for="is_parent">Is Parent?</label>
+                        </div>
+                    </div>
+                    <div class="form-group hidden" id="showDiv1">
+                        <label for="status">Parent Category</label> <span  style="color:red" id="parent_err"> </span>
+                        <select name="parent_id" class="form-control" id="parent_id">
+                            <option value="">-Select Category-</option>
+                            @foreach($categories as $c)
+                            <option value="{{ $c->id }}">{{ $c->cat_name }}</option>
+                            @endforeach
                         </select>
                     </div>
                 </div>
@@ -165,7 +186,7 @@ $.ajaxSetup({
     }
 });
 
-var SITEURL = '{{ route('admin.services.index')}}';
+var SITEURL = '{{ route('admin.categories.index')}}';
 $('#dataTableHover').DataTable({
     processing: true,
     serverSide: true,
@@ -176,7 +197,8 @@ $('#dataTableHover').DataTable({
     columns: [
             { data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false,searchable: false},
             { data: 'service_name', name: 'service_name' },
-            { data: 'service_type', name: 'service_type' },
+            { data: 'cat_name', name: 'cat_name' },
+            { data: 'parent_id', name: 'parent_id' },
             { data: 'status', name: 'status' },
             {data: 'action', name: 'action', orderable: false},
         ],
@@ -189,6 +211,7 @@ $('body').on('click', '#submitButton', function () {
     var status = $("#status").val();
     var parent_id = $("#parent_id").val();
     var is_parent = $("#customControlAutosizing").val();
+    // alert(is_parent);
     if (service_name=="") {
         $("#service_err").fadeIn().html("Required");
         setTimeout(function(){ $("#service_err").fadeOut(); }, 3000);
@@ -201,12 +224,6 @@ $('body').on('click', '#submitButton', function () {
         $("#category").focus();
         return false;
     }
-    if (status=="") {
-        $("#status_err").fadeIn().html("Required");
-        setTimeout(function(){ $("#status_err").fadeOut(); }, 3000);
-        $("#status").focus();
-        return false;
-    }
     if(is_parent == 0){
         if(parent_id == ""){
             $("#parent_err").fadeIn().html("Required");
@@ -214,6 +231,12 @@ $('body').on('click', '#submitButton', function () {
             $("#parent_id").focus();
             return false;
         }
+    }
+    if (status=="") {
+        $("#status_err").fadeIn().html("Required");
+        setTimeout(function(){ $("#status_err").fadeOut(); }, 3000);
+        $("#status").focus();
+        return false;
     }
     else
     { 
@@ -243,7 +266,7 @@ function EditModel(obj,bid)
     // alert(datastring);
     $.ajax({
         type:"POST",
-        url:"{{ route('admin.get.service') }}",
+        url:"{{ route('admin.get.category') }}",
         data:datastring,
         cache:false,        
         success:function(returndata)

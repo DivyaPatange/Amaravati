@@ -16,8 +16,30 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        $categories = Category::where('status', 'Active')->get();
+        $categories = Category::where('status', 'Active')->where('parent_id', '!=', null)->get();
         // dd($categories);
+        $allCategory = Category::orderBy('id', 'DESC')->get();
+        if(request()->ajax()) {
+            return datatables()->of($allCategory)
+            ->addColumn('service_name', function($row){    
+                $service = Service::where('id', $row->service_id)->first();
+                if(!empty($service))
+                {
+                    return $service->service_name;
+                }                                                                                                                                                                                                                                                                                      
+            })
+            ->addColumn('parent_id', function($row){    
+                $category = Category::where('id', $row->parent_id)->first();
+                if(!empty($category))
+                {
+                    return $category->cat_name;
+                }                                                                                                                                                                                                                                                                                      
+            })
+            ->addColumn('action', 'admin.category.action')
+            ->rawColumns(['action'])
+            ->addIndexColumn()
+            ->make(true);
+        }
         $services = Service::where('status', 'Active')->get();
         return view('admin.category.index', compact('services', 'categories'));
     }
@@ -95,5 +117,18 @@ class CategoryController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    public function getCategory(Request $request)
+    {
+        $category = Category::where('id', $request->bid)->first();
+        if (!empty($category)) 
+        {
+            $data = array('id' =>$service->id,'service_name' =>$service->service_name,'status' =>$service->status, 'service_type' => $service->service_type
+            );
+        }else{
+            $data =0;
+        }
+        echo json_encode($data);
     }
 }
