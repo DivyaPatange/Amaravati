@@ -9,6 +9,11 @@ use App\Http\Controllers\Auth\VendorRegisterController;
 use App\Http\Controllers\Admin\ServiceController;
 use App\Http\Controllers\Admin\CategoryController;
 
+
+// Vendor Controller
+use App\Http\Controllers\Vendor\ProductController;
+
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -57,7 +62,8 @@ Route::prefix('admin')->name('admin.')->group(function() {
     Route::post('/get-service', [ServiceController::class, 'getService'])->name('get.service');
     Route::post('/service/update', [ServiceController::class, 'updateService']);
     Route::resource('categories', CategoryController::class);
-    Route::get('/get-category', [CategoryController::class, 'getCategory'])->name('get.category');
+    Route::post('/get-category', [CategoryController::class, 'getCategory'])->name('get.category');
+    Route::post('/category/update', [CategoryController::class, 'updateCategory']);
 });
 
 Auth::routes();
@@ -72,4 +78,7 @@ Route::prefix('vendors')->name('vendor.')->group(function() {
     Route::post('/register', [VendorRegisterController::class, 'register'])->name('register.submit');
     Route::get('/', [App\Http\Controllers\Auth\VendorController::class, 'index'])->name('dashboard');
     Route::get('/logout', [VendorLoginController::class, 'logout'])->name('logout');
+    Route::resource('product', ProductController::class);
+    Route::get('/get-category-list', [ProductController::class, 'getCategoryList']);
+    Route::get('/get-parentCategory-list', [ProductController::class, 'getParentCategory']);
 });

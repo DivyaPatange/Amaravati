@@ -129,7 +129,7 @@
             <form method="POST" >
                 <div class="modal-body">
                     <div class="form-group">
-                        <label for="service_name">Service</label> <span  style="color:red" id="service_err"> </span>
+                        <label for="service_name">Service</label> <span  style="color:red" id="e_service_err"> </span>
                         <select name="service_name" class="form-control" id="edit_service_name">
                             <option value="">-Select Service-</option>
                             @foreach($services as $s)
@@ -138,12 +138,12 @@
                         </select>
                     </div>
                     <div class="form-group">
-                        <label for="type">Category</label> <span  style="color:red" id="cat_err"> </span>
+                        <label for="type">Category</label> <span  style="color:red" id="e_cat_err"> </span>
                         <input type="text" name="category" id="edit_category" class="form-control">
                     </div>
                     <div class="form-group">
-                        <label for="status">Status</label> <span  style="color:red" id="status_err"> </span>
-                        <select name="status" class="form-control" id="status">
+                        <label for="status">Status</label> <span  style="color:red" id="e_status_err"> </span>
+                        <select name="status" class="form-control" id="edit_status">
                             <option value="">-Select Status-</option>
                             <option value="Active">Active</option>
                             <option value="Inactive">Inactive</option>
@@ -156,8 +156,8 @@
                         </div>
                     </div>
                     <div class="form-group hidden" id="showDiv1">
-                        <label for="status">Parent Category</label> <span  style="color:red" id="parent_err"> </span>
-                        <select name="parent_id" class="form-control" id="parent_id">
+                        <label for="status">Parent Category</label> <span  style="color:red" id="e_parent_err"> </span>
+                        <select name="parent_id" class="form-control" id="edit_parent_id">
                             <option value="">-Select Category-</option>
                             @foreach($categories as $c)
                             <option value="{{ $c->id }}">{{ $c->cat_name }}</option>
@@ -277,8 +277,14 @@ function EditModel(obj,bid)
             var json = JSON.parse(returndata);
             $("#id").val(json.id);
             $("#edit_service_name").val(json.service_name);
-            $("#edit_type").val(json.service_type);
+            $("#edit_category").val(json.cat_name);
             $("#edit_status").val(json.status);
+            if(json.parent_id != null){
+                $("#is_parent").val(0);
+                $("#is_parent").attr("checked", "checked");
+                $("#showDiv1").show();
+                $("#edit_parent_id").val(json.parent_id);
+            }
         }
         }
     });
@@ -286,36 +292,46 @@ function EditModel(obj,bid)
 
 function checkSubmit()
 {
+    var id = $("#id").val();
     var service_name = $("#edit_service_name").val();
-    var service_type = $("#edit_type").val();
+    var category = $("#edit_category").val();
     var status = $("#edit_status").val();
-    var id = $("#id").val().trim();
+    var parent_id = $("#edit_parent_id").val();
+    var is_parent = $("#is_parent").val();
     if (service_name=="") {
-        $("#edit_service_err").fadeIn().html("Required");
-        setTimeout(function(){ $("#edit_service_err").fadeOut(); }, 3000);
+        $("#e_service_err").fadeIn().html("Required");
+        setTimeout(function(){ $("#e_service_err").fadeOut(); }, 3000);
         $("#edit_service_name").focus();
         return false;
     }
-    if (service_type=="") {
-        $("#edit_type_err").fadeIn().html("Required");
-        setTimeout(function(){ $("#edit_type_err").fadeOut(); }, 3000);
-        $("#edit_type").focus();
+    if (category=="") {
+        $("#e_cat_err").fadeIn().html("Required");
+        setTimeout(function(){ $("#e_cat_err").fadeOut(); }, 3000);
+        $("#edit_category").focus();
         return false;
     }
+    if(is_parent == 0){
+        if(parent_id == ""){
+            $("#e_parent_err").fadeIn().html("Required");
+            setTimeout(function(){ $("#e_parent_err").fadeOut(); }, 3000);
+            $("#edit_parent_id").focus();
+            return false;
+        }
+    }
     if (status=="") {
-        $("#edit_status_err").fadeIn().html("Required");
-        setTimeout(function(){ $("#edit_status_err").fadeOut(); }, 3000);
+        $("#e_status_err").fadeIn().html("Required");
+        setTimeout(function(){ $("#e_status_err").fadeOut(); }, 3000);
         $("#edit_status").focus();
         return false;
     }
     else
     { 
         $('#editService').attr('disabled',true);
-        var datastring="service_name="+service_name+"&status="+status+"&id="+id+"&service_type="+service_type;
+        var datastring="service_name="+service_name+"&status="+status+"&id="+id+"&category="+category+"&is_parent="+is_parent+"&parent_id="+parent_id;
         // alert(datastring);
         $.ajax({
             type:"POST",
-            url:"{{ url('/admin/service/update') }}",
+            url:"{{ url('/admin/category/update') }}",
             data:datastring,
             cache:false,        
             success:function(returndata)
@@ -339,7 +355,7 @@ $('body').on('click', '#delete', function () {
     if(confirm("Are You sure want to delete !")){
         $.ajax({
             type: "delete",
-            url: "{{ url('admin/services') }}"+'/'+id,
+            url: "{{ url('admin/categories') }}"+'/'+id,
             success: function (data) {
             var oTable = $('#dataTableHover').dataTable(); 
             oTable.fnDraw(false);
@@ -363,6 +379,22 @@ $(function() {
     else {
         $("#showDiv").hide();
         $(this).val(1);
+    }
+  });
+  
+});
+$(function() {
+  
+  $(document).on('click', '#is_parent', function() {
+  
+    if ($(this).val() == 1) {
+        $("#showDiv1").show();
+        $(this).val(0);
+    } 
+    else {
+        $("#showDiv1").hide();
+        $(this).val(1);
+        $("#edit_parent_id").removeAttr("selected");
     }
   });
   

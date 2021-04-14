@@ -16,7 +16,7 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        $categories = Category::where('status', 'Active')->where('parent_id', '!=', null)->get();
+        $categories = Category::where('status', 'Active')->where('parent_id', NULL)->get();
         // dd($categories);
         $allCategory = Category::orderBy('id', 'DESC')->get();
         if(request()->ajax()) {
@@ -66,7 +66,7 @@ class CategoryController extends Controller
         $category->service_id = $request->service_name;
         $category->cat_name = $request->category;
         $category->status = $request->status;
-        if($category->is_parent == 0)
+        if($request->is_parent == 0)
         {
             $category->parent_id = $request->parent_id;
         }
@@ -116,7 +116,9 @@ class CategoryController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $category = Category::findorfail($id);
+        $category->delete();
+        return response()->json(['success' => 'Category Deleted Successfully!']);
     }
 
     public function getCategory(Request $request)
@@ -124,11 +126,32 @@ class CategoryController extends Controller
         $category = Category::where('id', $request->bid)->first();
         if (!empty($category)) 
         {
-            $data = array('id' =>$service->id,'service_name' =>$service->service_name,'status' =>$service->status, 'service_type' => $service->service_type
+            $data = array('id' =>$category->id, 'service_name' => $category->service_id ,'cat_name' =>$category->cat_name,'status' =>$category->status, 'parent_id' => $category->parent_id
             );
         }else{
             $data =0;
         }
         echo json_encode($data);
+    }
+
+    public function updateCategory(Request $request)
+    {
+        $category = Category::where('id', $request->id)->first();
+        if($request->is_parent == 0)
+        {
+            $parent_id = $request->parent_id;
+        }
+        else{
+            $parent_id = null;
+        }
+        $input_data = array (
+            'service_id' => $request->service_name,
+            'cat_name' => $request->category,
+            'status' => $request->status,
+            'parent_id' => $parent_id,
+        );
+
+        Category::whereId($category->id)->update($input_data);
+        return response()->json(['success' => 'Category Updated Successfully']);
     }
 }

@@ -25,8 +25,8 @@
     <div id="collapseForm" class="collapse" aria-labelledby="headingForm" data-parent="#accordionSidebar">
         <div class="bg-white py-2 collapse-inner rounded">
         <h6 class="collapse-header">Products</h6>
-        <a class="collapse-item" href="form_basics.html">Add Product</a>
-        <a class="collapse-item" href="form_advanceds.html">Products List</a>
+        <a class="collapse-item" href="{{ route('vendor.product.create') }}">Add Product</a>
+        <a class="collapse-item" href="{{ route('vendor.product.index') }}">Products List</a>
         </div>
     </div>
     </li>
