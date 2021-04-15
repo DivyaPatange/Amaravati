@@ -2,7 +2,7 @@
 @section('title', 'Vendor')
 @section('page_title', 'Edit Vendor')
 @section('customcss')
-
+<link href="http://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.min.css" rel="stylesheet" />
 @endsection
 @section('content')
 <div class="row mb-3">
@@ -62,6 +62,21 @@
                     </div>
                     <div class="col-md-6">
                         <div class="form-group">
+                            <label for="gst_no">Service </label> <span  style="color:red" id="service_err"> </span>
+                            <?php 
+                                $explodeService = explode(",", $vendor->services);
+                                // dd($explodeService);
+                            ?>
+                            <select class="form-control" name="service[]" id="service" multiple>
+                                
+                                @foreach($services as $s)
+                                <option value="{{ $s->id }}" @if(in_array($s->id, $explodeService)) Selected @endif>{{ $s->service_name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
                             <label for="">Aadhar Image</label>
                             <div class="custom-file">
                             <input type="file" name="aadhar_img" class="custom-file-input" id="customFile">
@@ -112,13 +127,18 @@
 
 @endsection
 @section('customjs')
+<script src="http://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js"></script>
 <script>
 $.ajaxSetup({
     headers: {
         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
     }
 });
+$(document).ready(function() {
+    // alert(‘1’);
+    $('#service').select2();
 
+});
 $('body').on('click', '#submitButton', function () {
     var owner_name = $("#owner_name").val();
     var busi_name = $("#busi_name").val();
@@ -126,8 +146,7 @@ $('body').on('click', '#submitButton', function () {
     var busi_start_date = $("#busi_start_date").val();
     var busi_location = $("#busi_location").val();
     var busi_address = $("#busi_address").val();
-    var password = $("#password").val();
-    var confirmPassword = $("#con_pwd").val();
+    var service = $('#service').val();
     if (owner_name=="") {
         $("#owner_err").fadeIn().html("Required");
         setTimeout(function(){ $("#owner_err").fadeOut(); }, 3000);
@@ -162,6 +181,12 @@ $('body').on('click', '#submitButton', function () {
         $("#address_err").fadeIn().html("Required");
         setTimeout(function(){ $("#address_err").fadeOut(); }, 3000);
         $("#busi_address").focus();
+        return false;
+    }
+    if (service=="") {
+        $("#service_err").fadeIn().html("Required");
+        setTimeout(function(){ $("#service_err").fadeOut(); }, 3000);
+        $("#service").focus();
         return false;
     }
     else

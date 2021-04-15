@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Admin\Vendor;
 use Illuminate\Support\Facades\Hash;
+use App\Models\Admin\Service;
 
 class VendorController extends Controller
 {
@@ -38,7 +39,8 @@ class VendorController extends Controller
      */
     public function create()
     {
-        return view('admin.vendor.create');
+        $services = Service::where('status', 'Active')->get();
+        return view('admin.vendor.create', compact('services'));
     }
 
     /**
@@ -57,6 +59,7 @@ class VendorController extends Controller
         $vendor->location = $request->busi_location;
         $vendor->address = $request->busi_address;
         $vendor->gst_no = $request->gst_no;
+        $vendor->services = implode(",", $request->service);
         $image = $request->file('aadhar_img');
         // dd($request->file('photo'));
         if($image != '')
@@ -109,8 +112,9 @@ class VendorController extends Controller
      */
     public function edit($id)
     {
+        $services = Service::where('status', 'Active')->get();
         $vendor = Vendor::findorfail($id);
-        return view('admin.vendor.edit', compact('vendor'));
+        return view('admin.vendor.edit', compact('vendor', 'services'));
     }
 
     /**
@@ -161,6 +165,7 @@ class VendorController extends Controller
             'aadhar_img' => $image_name,
             'pan_img' => $image_name1,
             'shop_img' => $image_name2,
+            'services' => implode(",", $request->service),
         );
         $vendor = Vendor::whereId($id)->update($input_data);
         return redirect('/admin/vendors')->with('success', 'Vendor Updated Successfully');
