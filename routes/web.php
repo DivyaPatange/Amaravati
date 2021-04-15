@@ -5,6 +5,8 @@ use App\Http\Controllers\Auth\AdminLoginController;
 use App\Http\Controllers\Auth\AdminController;
 use App\Http\Controllers\Admin\VendorController;
 use App\Http\Controllers\Auth\VendorLoginController;
+use App\Http\Controllers\Admin\CategoryController;
+use App\Http\Controllers\Admin\SubCategoryController;
 
 /*
 |--------------------------------------------------------------------------
@@ -50,6 +52,8 @@ Route::prefix('admin')->name('admin.')->group(function() {
     Route::get('/', [AdminController::class, 'index'])->name('dashboard');
     Route::get('/logout', [AdminLoginController::class, 'logout'])->name('logout');
     Route::resource('/vendors', VendorController::class);
+    Route::resource('/category', CategoryController::class);
+    Route::resource('/sub-category', SubCategoryController::class);
 });
 
 Auth::routes();
