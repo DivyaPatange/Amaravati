@@ -1,6 +1,6 @@
 @extends('admin.admin_layout.main')
-@section('title', 'Service')
-@section('page_title', 'Service List')
+@section('title', 'Product')
+@section('page_title', 'Product List')
 @section('customcss')
 <link href="{{ asset('vendor/datatables/dataTables.bootstrap4.min.css') }}" rel="stylesheet">
 <link href="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css" rel="stylesheet"/>
@@ -75,6 +75,15 @@ tr.shown td.details-control:before{
                     </div>
                     <div class="col-md-3">
                         <div class="form-group">
+                            <select class="form-control js-example" name="status" id="status">
+                                <option value="">All</option>
+                                <option value="In-Stock">In-Stock</option>
+                                <option value="Out of Stock">Out of Stock</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
                             <button type="button" id="getList" class="btn btn-primary">Get List</button>
                         </div>
                     </div>
@@ -85,23 +94,23 @@ tr.shown td.details-control:before{
                     <thead class="thead-light">
                         <tr>
                             <th></th>
-                            <th>Service Image</th>
-                            <th>Service Name</th>
+                            <th>Product Image</th>
+                            <th>Product Name</th>
                             <th>Vendor Name</th>
-                            <th>Service Price</th>
-                            <th>Quantity</th>
-                            <th>Category</th>
+                            <th>Selling Price</th>
+                            <th>Cost Price</th>
+                            <th>Status</th>
                         </tr>
                     </thead>
                     <tfoot>
                         <tr>
                             <th></th>
-                            <th>Service Image</th>
-                            <th>Service Name</th>
+                            <th>Product Image</th>
+                            <th>Product Name</th>
                             <th>Vendor Name</th>
-                            <th>Service Price</th>
-                            <th>Quantity</th>
-                            <th>Category</th>
+                            <th>Selling Price</th>
+                            <th>Cost Price</th>
+                            <th>Status</th>
                         </tr>
                     </tfoot>
                     <tbody>
@@ -130,21 +139,29 @@ function format ( d ) {
     // `d` is the original data object for the row
     return '<table cellpadding="5" cellspacing="0" border="0" style="padding-left:50px; width:100%">'+
         '<tr>'+
+            '<td style="text-align:center">Category</td>'+
+            '<td style="text-align:center">'+d.category_id+'</td>'+
+        '</tr>'+
+        '<tr>'+
             '<td style="text-align:center">Sub-Category</td>'+
             '<td style="text-align:center">'+d.sub_category_id+'</td>'+
+        '</tr>'+
+        '<tr>'+
+            '<td style="text-align:center">Description</td>'+
+            '<td style="text-align:center">'+d.description+'</td>'+
         '</tr>'+
     '</table>';
 }
 $(document).ready(function() {
-    fetch_data(vendor = '', category = '');
-    function fetch_data(vendor = '',  category = ''){
+    fetch_data(vendor = '', status = '', category = '');
+    function fetch_data(vendor = '', service = '', category = ''){
         var table =$('#dataTableHover').DataTable({
             processing: true,
             serverSide: true,
             ajax: {
             url: SITEURL,
             type: 'GET',
-            data: {vendor:vendor, category:category}
+            data: {vendor:vendor, status:status, category:category}
             },
         columns: [
                 { 
@@ -153,12 +170,12 @@ $(document).ready(function() {
                     "data":           null,
                     "defaultContent": ''
                 },
-                { data: 'service_img', name: 'service_img' },
-                { data: 'service_name', name: 'service_name' },
+                { data: 'product_img', name: 'product_img' },
+                { data: 'product_name', name: 'product_name' },
                 { data: 'vendor_id', name: 'vendor_id' },
-                { data: 'service_cost', name: 'service_cost' },
-                { data: 'quantity', name: 'quantity' },
-                { data: 'category_id', name: 'category_id' },
+                { data: 'selling_price', name: 'selling_price' },
+                { data: 'cost_price', name: 'cost_price' },
+                { data: 'status', name: 'status' },
             ],
         order: [[0, 'desc']]
         })
@@ -180,11 +197,36 @@ $(document).ready(function() {
     }
     $('#getList').click(function () {
         var vendor = $("#vendor").val();
+        var status = $("#status").val(); 
         var category = $("#category").val();  
         $("#dataTableHover").DataTable().destroy();
-        fetch_data(vendor, category);
+        fetch_data(vendor, status, category);
     });
 });
 
+$('#service').change(function(){
+  var serviceID = $(this).val();  
+    //   alert(serviceID);
+  if(serviceID){
+    $.ajax({
+      type:"GET",
+      url:"{{url('/admin/get-category-list')}}?service_id="+serviceID,
+      success:function(res){        
+      if(res){
+        $("#category").empty();
+        $("#category").append('<option value="">Select Category</option>');
+        $.each(res,function(key,value){
+          $("#category").append('<option value="'+key+'">'+value+'</option>');
+        });
+      
+      }else{
+        $("#category").empty();
+      }
+      }
+    });
+  }else{
+    $("#category").empty();
+  }   
+});
 </script>
 @endsection

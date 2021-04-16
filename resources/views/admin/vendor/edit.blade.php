@@ -61,19 +61,7 @@
                         </div>
                     </div>
                     <div class="col-md-6">
-                        <div class="form-group">
-                            <label for="gst_no">Service </label> <span  style="color:red" id="service_err"> </span>
-                            <?php 
-                                $explodeService = explode(",", $vendor->services);
-                                // dd($explodeService);
-                            ?>
-                            <select class="form-control" name="service[]" id="service" multiple>
-                                
-                                @foreach($services as $s)
-                                <option value="{{ $s->id }}" @if(in_array($s->id, $explodeService)) Selected @endif>{{ $s->service_name }}</option>
-                                @endforeach
-                            </select>
-                        </div>
+                        
                     </div>
                     <div class="col-md-6">
                         <div class="form-group">

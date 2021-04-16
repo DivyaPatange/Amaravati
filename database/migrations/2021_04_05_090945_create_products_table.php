@@ -17,12 +17,10 @@ class CreateProductsTable extends Migration
             $table->id();
             $table->unsignedInteger('vendor_id');
             $table->foreign('vendor_id')->references('id')->on('vendors');
-            $table->unsignedInteger('service_id');
-            $table->foreign('service_id')->references('id')->on('services');
             $table->unsignedInteger('category_id');
             $table->foreign('category_id')->references('id')->on('categories');
-            $table->unsignedInteger('parent_cat_id')->nullable();
-            $table->foreign('parent_cat_id')->references('id')->on('categories');
+            $table->unsignedInteger('sub_category_id')->nullable();
+            $table->foreign('sub_category_id')->references('id')->on('sub_categories');
             $table->string('product_name');
             $table->string('product_img');
             $table->decimal('selling_price', 20);

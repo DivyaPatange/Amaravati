@@ -18,7 +18,7 @@ class CreateSubCategoriesTable extends Migration
             $table->unsignedInteger('category_id');
             $table->foreign('category_id')->references('id')->on('categories');
             $table->string('sub_category');
-            $table->boolean('status')->default(1);
+            $table->enum('status', ['Active', 'Inactive']);
             $table->timestamps();
         });
     }

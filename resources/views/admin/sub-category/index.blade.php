@@ -1,14 +1,19 @@
 @extends('admin.admin_layout.main')
-@section('title', 'Category')
-@section('page_title', 'Category')
+@section('title', 'Sub-Category')
+@section('page_title', 'Sub-Category')
 @section('customcss')
 <link href="{{ asset('vendor/datatables/dataTables.bootstrap4.min.css') }}" rel="stylesheet">
 <link href="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css" rel="stylesheet"/>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
 <script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+<link href="http://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.min.css" rel="stylesheet" />
+
 <style>
 .hidden{
     display:none;
+}
+.select2-container .select2-selection--single{
+    height:42px;
 }
 </style>
 @endsection
@@ -18,19 +23,29 @@
         <!-- Form Basic -->
         <div class="card mb-4">
             <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                <h6 class="m-0 font-weight-bold text-primary">Add Category</h6>
+                <h6 class="m-0 font-weight-bold text-primary">Add Sub-Category</h6>
             </div>
             <div class="card-body">
                 <form method="POST" id="submitForm" enctype="multipart/form-data">
                     <div class="row">
-                        <div class="col-md-6">
+                        <div class="col-md-4">
                             <div class="form-group">
-                                <label for="type">Category</label> <span  style="color:red" id="cat_err"> </span>
-                                <input type="text" name="category" id="category" class="form-control">
+                                <label for="category">Category</label> <span  style="color:red" id="cat_err"> </span>
+                                <select class="form-control js-example" name="category" id="category">
+                                    <option value="">Select Category</option>
+                                    @foreach($categories as $c)
+                                    <option value="{{ $c->id }}">{{ $c->cat_name }}</option>
+                                    @endforeach
+                                </select>
                             </div>
                         </div>
-                        
-                        <div class="col-md-6">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="sub_category">Sub-Category</label> <span  style="color:red" id="sub_cat_err"> </span>
+                                <input type="text" name="sub_category" id="sub_category" class="form-control">
+                            </div>
+                        </div>
+                        <div class="col-md-4">
                             <div class="form-group">
                                 <label for="status">Status</label> <span  style="color:red" id="status_err"> </span>
                                 <select name="status" class="form-control" id="status">
@@ -64,6 +79,7 @@
                         <tr>
                             <th>Sr. No.</th>
                             <th>Category</th>
+                            <th>Sub-Category</th>
                             <th>Status</th>
                             <th>Action</th>
                         </tr>
@@ -72,6 +88,7 @@
                         <tr>
                             <th>Sr. No.</th>
                             <th>Category</th>
+                            <th>Sub-Category</th>
                             <th>Status</th>
                             <th>Action</th>
                         </tr>
@@ -89,7 +106,7 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Edit Service</h5>
+                <h5 class="modal-title" id="exampleModalLabel">Edit Sub-Category</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
                 </button>
@@ -97,8 +114,17 @@
             <form method="POST" >
                 <div class="modal-body">
                     <div class="form-group">
-                        <label for="type">Category</label> <span  style="color:red" id="e_cat_err"> </span>
-                        <input type="text" name="category" id="edit_category" class="form-control">
+                        <label for="e_category">Category</label> <span  style="color:red" id="e_cat_err"> </span>
+                        <select class="form-control js-example" name="category" id="e_category">
+                            <option value="">Select Category</option>
+                            @foreach($categories as $c)
+                            <option value="{{ $c->id }}">{{ $c->cat_name }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="e_sub_category">Sub-Category</label> <span  style="color:red" id="e_sub_cat_err"> </span>
+                        <input type="text" name="sub_category" id="e_sub_category" class="form-control">
                     </div>
                     <div class="form-group">
                         <label for="status">Status</label> <span  style="color:red" id="e_status_err"> </span>
@@ -129,8 +155,11 @@ $.ajaxSetup({
         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
     }
 });
+$(document).ready(function() {
+    $('.js-example').select2();
 
-var SITEURL = '{{ route('admin.categories.index')}}';
+});
+var SITEURL = '{{ route('admin.sub-category.index')}}';
 $('#dataTableHover').DataTable({
     processing: true,
     serverSide: true,
@@ -140,7 +169,8 @@ $('#dataTableHover').DataTable({
     },
     columns: [
             { data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false,searchable: false},
-            { data: 'cat_name', name: 'cat_name' },
+            { data: 'category_id', name: 'category_id' },
+            { data: 'sub_category', name: 'sub_category' },
             { data: 'status', name: 'status' },
             {data: 'action', name: 'action', orderable: false},
         ],
@@ -149,12 +179,19 @@ $('#dataTableHover').DataTable({
 
 $('body').on('click', '#submitButton', function () {
     var category = $("#category").val();
+    var sub_category = $("#sub_category").val();
     var status = $("#status").val();
     // alert(is_parent);
     if (category=="") {
         $("#cat_err").fadeIn().html("Required");
         setTimeout(function(){ $("#cat_err").fadeOut(); }, 3000);
         $("#category").focus();
+        return false;
+    }
+    if (sub_category=="") {
+        $("#sub_cat_err").fadeIn().html("Required");
+        setTimeout(function(){ $("#sub_cat_err").fadeOut(); }, 3000);
+        $("#sub_category").focus();
         return false;
     }
     if (status=="") {
@@ -165,11 +202,11 @@ $('body').on('click', '#submitButton', function () {
     }
     else
     { 
-        var datastring="status="+status+"&category="+category;
+        var datastring="status="+status+"&category="+category+"&sub_category="+sub_category;
         // alert(datastring);
         $.ajax({
             type:"POST",
-            url:"{{ route('admin.categories.store') }}",
+            url:"{{ route('admin.sub-category.store') }}",
             data:datastring,
             cache:false,        
             success:function(returndata)
@@ -191,7 +228,7 @@ function EditModel(obj,bid)
     // alert(datastring);
     $.ajax({
         type:"POST",
-        url:"{{ route('admin.get.category') }}",
+        url:"{{ route('admin.get.sub-category') }}",
         data:datastring,
         cache:false,        
         success:function(returndata)
@@ -201,7 +238,8 @@ function EditModel(obj,bid)
             $("#exampleModal").modal('show');
             var json = JSON.parse(returndata);
             $("#id").val(json.id);
-            $("#edit_category").val(json.cat_name);
+            $("#e_category").val(json.category_id);
+            $("#e_sub_category").val(json.sub_category);
             $("#edit_status").val(json.status);
         }
         }
@@ -211,12 +249,19 @@ function EditModel(obj,bid)
 function checkSubmit()
 {
     var id = $("#id").val();
-    var category = $("#edit_category").val();
+    var category = $("#e_category").val();
+    var sub_category = $("#e_sub_category").val();
     var status = $("#edit_status").val();
     if (category=="") {
         $("#e_cat_err").fadeIn().html("Required");
         setTimeout(function(){ $("#e_cat_err").fadeOut(); }, 3000);
-        $("#edit_category").focus();
+        $("#e_category").focus();
+        return false;
+    }
+    if (sub_category=="") {
+        $("#e_sub_cat_err").fadeIn().html("Required");
+        setTimeout(function(){ $("#e_sub_cat_err").fadeOut(); }, 3000);
+        $("#e_sub_category").focus();
         return false;
     }
     if (status=="") {
@@ -228,11 +273,11 @@ function checkSubmit()
     else
     { 
         $('#editService').attr('disabled',true);
-        var datastring="status="+status+"&id="+id+"&category="+category;
+        var datastring="status="+status+"&id="+id+"&category="+category+"&sub_category="+sub_category;
         // alert(datastring);
         $.ajax({
             type:"POST",
-            url:"{{ url('/admin/category/update') }}",
+            url:"{{ url('/admin/sub-category/update') }}",
             data:datastring,
             cache:false,        
             success:function(returndata)
@@ -256,7 +301,7 @@ $('body').on('click', '#delete', function () {
     if(confirm("Are You sure want to delete !")){
         $.ajax({
             type: "delete",
-            url: "{{ url('admin/categories') }}"+'/'+id,
+            url: "{{ url('admin/sub-category') }}"+'/'+id,
             success: function (data) {
             var oTable = $('#dataTableHover').dataTable(); 
             oTable.fnDraw(false);

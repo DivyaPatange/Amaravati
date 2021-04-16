@@ -6,12 +6,13 @@ use App\Http\Controllers\Auth\AdminController;
 use App\Http\Controllers\Admin\VendorController;
 use App\Http\Controllers\Auth\VendorLoginController;
 use App\Http\Controllers\Auth\VendorRegisterController;
-use App\Http\Controllers\Admin\ServiceController;
 use App\Http\Controllers\Admin\CategoryController;
+use App\Http\Controllers\Admin\SubCategoryController;
 
 
 // Vendor Controller
 use App\Http\Controllers\Vendor\ProductController;
+use App\Http\Controllers\Vendor\ServiceController;
 
 
 /*
@@ -58,12 +59,15 @@ Route::prefix('admin')->name('admin.')->group(function() {
     Route::get('/', [AdminController::class, 'index'])->name('dashboard');
     Route::get('/logout', [AdminLoginController::class, 'logout'])->name('logout');
     Route::resource('/vendors', VendorController::class);
-    Route::resource('/services', ServiceController::class);
-    Route::post('/get-service', [ServiceController::class, 'getService'])->name('get.service');
-    Route::post('/service/update', [ServiceController::class, 'updateService']);
+    Route::resource('/services', App\Http\Controllers\Admin\ServiceController::class);
     Route::resource('categories', CategoryController::class);
     Route::post('/get-category', [CategoryController::class, 'getCategory'])->name('get.category');
     Route::post('/category/update', [CategoryController::class, 'updateCategory']);
+    Route::resource('/sub-category', SubCategoryController::class);
+    Route::post('/get-sub-category', [SubCategoryController::class, 'getSubCategory'])->name('get.sub-category');
+    Route::post('/sub-category/update', [SubCategoryController::class, 'updateSubCategory']);
+    Route::resource('/products', App\Http\Controllers\Admin\ProductController::class);
+    Route::get('/get-category-list', [App\Http\Controllers\Admin\ProductController::class, 'getCategoryList']);
 });
 
 Auth::routes();
@@ -79,6 +83,6 @@ Route::prefix('vendors')->name('vendor.')->group(function() {
     Route::get('/', [App\Http\Controllers\Auth\VendorController::class, 'index'])->name('dashboard');
     Route::get('/logout', [VendorLoginController::class, 'logout'])->name('logout');
     Route::resource('product', ProductController::class);
-    Route::get('/get-category-list', [ProductController::class, 'getCategoryList']);
-    Route::get('/get-parentCategory-list', [ProductController::class, 'getParentCategory']);
+    Route::get('/get-sub-category-list', [ProductController::class, 'getSubCategoryList']);
+    Route::resource('/service', ServiceController::class);
 });

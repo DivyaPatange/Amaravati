@@ -90,8 +90,8 @@ function format ( d ) {
     // `d` is the original data object for the row
     return '<table cellpadding="5" cellspacing="0" border="0" style="padding-left:50px; width:100%">'+
         '<tr>'+
-            '<td style="text-align:center">Service</td>'+
-            '<td style="text-align:center">'+d.service+'</td>'+
+            '<td style="text-align:center">Sub Category</td>'+
+            '<td style="text-align:center">'+d.sub_category+'</td>'+
         '</tr>'+
         '<tr>'+
             '<td style="text-align:center">Status</td>'+

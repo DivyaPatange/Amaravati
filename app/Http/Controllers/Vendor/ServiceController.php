@@ -4,18 +4,13 @@ namespace App\Http\Controllers\Vendor;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use Auth;
 use App\Models\Admin\Category;
-use App\Models\Admin\Product;
+use App\Models\Vendor\Service;
+use Auth;
 use App\Models\Admin\SubCategory;
 
-class ProductController extends Controller
+class ServiceController extends Controller
 {
-    public function __construct()
-    {
-        $this->middleware('auth:vendor');
-    }
-
     /**
      * Display a listing of the resource.
      *
@@ -23,12 +18,12 @@ class ProductController extends Controller
      */
     public function index()
     {
-        $products = Product::where('vendor_id', Auth::guard('vendor')->user()->id)->get();
+        $services = Service::where('vendor_id', Auth::guard('vendor')->user()->id)->get();
         if(request()->ajax()) {
-            return datatables()->of($products)
-            ->addColumn('product_img', function($row){    
-                if(!empty($row->product_img)){
-                    $imageUrl = asset('ProductImg/' . $row->product_img);
+            return datatables()->of($services)
+            ->addColumn('service_img', function($row){    
+                if(!empty($row->service_img)){
+                    $imageUrl = asset('ServiceImg/' . $row->service_img);
                     return '<img src="'.$imageUrl.'" width="50px">';
                 }                                                                                                                                                                                                                                                                                      
             })
@@ -39,28 +34,28 @@ class ProductController extends Controller
                     return $category->cat_name;
                 }                                                                                                                                                                                                                                                                                      
             })
-            ->addColumn('sub_category', function($row){    
+            ->addColumn('sub_category_id', function($row){    
                 $subCategory = SubCategory::where('id', $row->sub_category_id)->first();
                 if(!empty($subCategory))
                 {
                     return $subCategory->sub_category;
                 }                                                                                                                                                                                                                                                                                      
             })
-            ->addColumn('status', function($row){
-                if($row->status == "In-Stock")
+            ->addColumn('description', function($row){   
+                if($row->description != Null)
                 {
-                    return '<span class="badge badge-success">'.$row->status.'</span>';
-                }  
+                    return $row->description;
+                }
                 else{
-                    return '<span class="badge badge-danger">'.$row->status.'</span>';
-                }                                                                                                                                                                                                                                                                                    
+                    return "";
+                }
             })
-            ->addColumn('action', 'vendor.product.action')
-            ->rawColumns(['action', 'product_img', 'status', 'service'])
+            ->addColumn('action', 'vendor.service.action')
+            ->rawColumns(['action', 'service_img', 'category_id', 'sub_category_id'])
             ->addIndexColumn()
             ->make(true);
         }
-        return view('vendor.product.index');
+        return view('vendor.service.index');
     }
 
     /**
@@ -70,17 +65,9 @@ class ProductController extends Controller
      */
     public function create()
     {
-        $categories = Category::where('status', 'Active')->get(); 
-        return view('vendor.product.create', compact('categories'));
+        $categories = Category::where('status', 'Active')->get();
+        return view('vendor.service.create', compact('categories'));
     }
-
-    public function getSubCategoryList(Request $request)
-    {
-        $category = SubCategory::where("category_id", $request->category_id)->where('status', 1)
-        ->pluck("sub_category","id");
-        return response()->json($category);
-    }
-
 
     /**
      * Store a newly created resource in storage.
@@ -90,25 +77,24 @@ class ProductController extends Controller
      */
     public function store(Request $request)
     {
-        $product = new Product();
-        $product->vendor_id = Auth::guard('vendor')->user()->id;
-        $product->category_id = $request->category;
-        $product->sub_category_id = $request->sub_category;
-        $product->product_name = $request->product_name;
-        $image = $request->file('product_img');
+        $service = new Service();
+        $service->vendor_id = Auth::guard('vendor')->user()->id;
+        $service->category_id = $request->category;
+        $service->sub_category_id = $request->sub_category;
+        $service->service_name = $request->service_name;
+        $image = $request->file('service_img');
         // dd($request->file('photo'));
         if($image != '')
         {
             $image_name = rand() . '.' . $image->getClientOriginalExtension();
-            $image->move(public_path('ProductImg'), $image_name);
-            $product->product_img =$image_name;
+            $image->move(public_path('ServiceImg'), $image_name);
+            $service->service_img =$image_name;
         }
-        $product->selling_price = $request->selling_price;
-        $product->cost_price = $request->cost_price;
-        $product->description = $request->description;
-        $product->status = $request->status;
-        $product->save();
-        return redirect('/vendors/product')->with('success', 'Product Added Successfully!');
+        $service->service_cost = $request->service_price;
+        $service->quantity = $request->quantity;
+        $service->description = $request->description;
+        $service->save();
+        return redirect('/vendors/service')->with('success', 'Service Added Successfully!');
     }
 
     /**
@@ -130,10 +116,10 @@ class ProductController extends Controller
      */
     public function edit($id)
     {
+        $service = Service::findorfail($id);
         $categories = Category::where('status', 'Active')->get();
-        $product = Product::findorfail($id); 
-        $subCategory = SubCategory::where('category_id', $product->category_id)->where('status', 'Active')->get();
-        return view('vendor.product.edit', compact('product', 'categories', 'subCategory'));
+        $subCategory = SubCategory::where('category_id', $service->category_id)->where('status', 'Active')->get();
+        return view('vendor.service.edit', compact('categories', 'service', 'subCategory'));
     }
 
     /**
@@ -145,28 +131,27 @@ class ProductController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $product = Product::findorfail($id);
+        $service = Service::findorfail($id);
         $image_name = $request->hidden_image;
-        $image = $request->file('product_img');
+        $image = $request->file('service_img');
         if($image != '')
         {
-            unlink(public_path('ProductImg/'.$product->product_img));
+            unlink(public_path('ServiceImg/'.$service->service_img));
             $image_name = rand() . '.' . $image->getClientOriginalExtension();
-            $image->move(public_path('ProductImg'), $image_name);
+            $image->move(public_path('ServiceImg'), $image_name);
         }
 
         $input_data = array (
             'sub_category_id' => $request->sub_category,
             'category_id' => $request->category,
-            'product_name' => $request->product_name,
-            'product_img' => $image_name,
-            'selling_price' => $request->selling_price,
-            'cost_price' => $request->cost_price,
+            'service_name' => $request->service_name,
+            'service_img' => $image_name,
+            'service_cost' => $request->service_price,
+            'quantity' => $request->quantity,
             'description' => $request->description,
-            'status' => $request->status
         );
-        Product::whereId($id)->update($input_data);
-        return redirect('/vendors/product')->with('success', 'Product Updated Successfully!');
+        Service::whereId($id)->update($input_data);
+        return redirect('/vendors/service')->with('success', 'Service Updated Successfully!');
     }
 
     /**
@@ -177,9 +162,9 @@ class ProductController extends Controller
      */
     public function destroy($id)
     {
-        $product = Product::findorfail($id);
-        unlink(public_path('ProductImg/'.$product->product_img));
-        $product->delete();
-        return response()->json(['success' => 'Product Deleted Successfully!']);
+        $service = Service::findorfail($id);
+        unlink(public_path('ServiceImg/'.$service->service_img));
+        $service->delete();
+        return response()->json(['success' => 'Service Deleted Successfully!']);
     }
 }

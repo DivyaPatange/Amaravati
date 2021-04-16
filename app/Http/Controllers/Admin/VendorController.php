@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Admin\Vendor;
 use Illuminate\Support\Facades\Hash;
-use App\Models\Admin\Service;
 
 class VendorController extends Controller
 {
@@ -24,8 +23,17 @@ class VendorController extends Controller
         $vendors = Vendor::orderBy('id', 'DESC')->get();
         if(request()->ajax()) {
             return datatables()->of($vendors)
+            ->addColumn('status', function($row){
+                if($row->status == "Active")
+                {
+                    return '<span class="badge badge-success">'.$row->status.'</span>';
+                }  
+                else{
+                    return '<span class="badge badge-danger">'.$row->status.'</span>';
+                }                                                                                                                                                                                                                                                                                    
+            })
             ->addColumn('action', 'admin.vendor.action')
-            ->rawColumns(['action'])
+            ->rawColumns(['action', 'status'])
             ->addIndexColumn()
             ->make(true);
         }
@@ -39,8 +47,7 @@ class VendorController extends Controller
      */
     public function create()
     {
-        $services = Service::where('status', 'Active')->get();
-        return view('admin.vendor.create', compact('services'));
+        return view('admin.vendor.create');
     }
 
     /**
@@ -59,7 +66,6 @@ class VendorController extends Controller
         $vendor->location = $request->busi_location;
         $vendor->address = $request->busi_address;
         $vendor->gst_no = $request->gst_no;
-        $vendor->services = implode(",", $request->service);
         $image = $request->file('aadhar_img');
         // dd($request->file('photo'));
         if($image != '')
@@ -112,9 +118,8 @@ class VendorController extends Controller
      */
     public function edit($id)
     {
-        $services = Service::where('status', 'Active')->get();
         $vendor = Vendor::findorfail($id);
-        return view('admin.vendor.edit', compact('vendor', 'services'));
+        return view('admin.vendor.edit', compact('vendor'));
     }
 
     /**
@@ -131,28 +136,34 @@ class VendorController extends Controller
         $image = $request->file('aadhar_img');
         if($image != '')
         {
-            
-        $image_name = rand() . '.' . $image->getClientOriginalExtension();
-        // $image->storeAs('public/tempcourseimg',$image_name);
-        $image->move(public_path('AadharImg'), $image_name);
+            if(!empty($vendor->aadhar_img)){
+                unlink(public_path('AadharImg/'.$vendor->aadhar_img));
+            }
+            $image_name = rand() . '.' . $image->getClientOriginalExtension();
+            // $image->storeAs('public/tempcourseimg',$image_name);
+            $image->move(public_path('AadharImg'), $image_name);
         }
         $image_name1 = $request->hidden_image1;
         $image1 = $request->file('pan_img');
         if($image1 != '')
         {
-            
-        $image_name1 = rand() . '.' . $image1->getClientOriginalExtension();
-        // $image->storeAs('public/tempcourseimg',$image_name);
-        $image1->move(public_path('PanImg'), $image_name1);
+            if(!empty($vendor->pan_img)){
+                unlink(public_path('PanImg/'.$vendor->pan_img));
+            }
+            $image_name1 = rand() . '.' . $image1->getClientOriginalExtension();
+            // $image->storeAs('public/tempcourseimg',$image_name);
+            $image1->move(public_path('PanImg'), $image_name1);
         }
         $image_name2 = $request->hidden_image2;
         $image2 = $request->file('shop_img');
         if($image2 != '')
         {
-            
-        $image_name2 = rand() . '.' . $image2->getClientOriginalExtension();
-        // $image->storeAs('public/tempcourseimg',$image_name);
-        $image2->move(public_path('ShopImg'), $image_name2);
+            if(!empty($vendor->shop_img)){
+                unlink(public_path('ShopImg/'.$vendor->shop_img));
+            }
+            $image_name2 = rand() . '.' . $image2->getClientOriginalExtension();
+            // $image->storeAs('public/tempcourseimg',$image_name);
+            $image2->move(public_path('ShopImg'), $image_name2);
         }
         $input_data = array (
             'business_owner_name' => $request->owner_name,
@@ -165,7 +176,6 @@ class VendorController extends Controller
             'aadhar_img' => $image_name,
             'pan_img' => $image_name1,
             'shop_img' => $image_name2,
-            'services' => implode(",", $request->service),
         );
         $vendor = Vendor::whereId($id)->update($input_data);
         return redirect('/admin/vendors')->with('success', 'Vendor Updated Successfully');

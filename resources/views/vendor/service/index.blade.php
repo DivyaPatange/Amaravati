@@ -1,6 +1,6 @@
-@extends('admin.admin_layout.main')
-@section('title', 'Vendor')
-@section('page_title', 'Vendor List')
+@extends('vendor.vendor_layout.main')
+@section('title', 'Service')
+@section('page_title', 'Service List')
 @section('customcss')
 <link href="{{ asset('vendor/datatables/dataTables.bootstrap4.min.css') }}" rel="stylesheet">
 <link href="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css" rel="stylesheet"/>
@@ -45,28 +45,28 @@ tr.shown td.details-control:before{
     <div class="col-lg-12">
         <div class="card mb-4">
             <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                <h6 class="m-0 font-weight-bold text-primary">Vendor List</h6>
+                <h6 class="m-0 font-weight-bold text-primary">Product List</h6>
             </div>
             <div class="table-responsive p-3">
                 <table class="table align-items-center table-flush table-hover" id="dataTableHover">
                     <thead class="thead-light">
                         <tr>
                             <th></th>
-                            <th>Business Owner Name</th>
-                            <th>Business Name</th>
-                            <th>Business Type</th>
-                            <th>Username</th>
-                            <th>Password</th>
+                            <th>Service Image</th>
+                            <th>Service Name</th>
+                            <th>Service Price</th>
+                            <th>Category</th>
+                            <th>Sub-Category</th>
                         </tr>
                     </thead>
                     <tfoot>
                         <tr>
                             <th></th>
-                            <th>Business Owner Name</th>
-                            <th>Business Name</th>
-                            <th>Business Type</th>
-                            <th>Username</th>
-                            <th>Password</th>
+                            <th>Service Image</th>
+                            <th>Service Name</th>
+                            <th>Service Price</th>
+                            <th>Category</th>
+                            <th>Sub-Category</th>
                         </tr>
                     </tfoot>
                     <tbody>
@@ -85,13 +85,17 @@ tr.shown td.details-control:before{
 <script src="{{ asset('vendor/datatables/jquery.dataTables.min.js') }}"></script>
 <script src="{{ asset('vendor/datatables/dataTables.bootstrap4.min.js') }}"></script>
 <script>
-var SITEURL = '{{ route('admin.vendors.index')}}';
+var SITEURL = '{{ route('vendor.service.index')}}';
 function format ( d ) {
     // `d` is the original data object for the row
     return '<table cellpadding="5" cellspacing="0" border="0" style="padding-left:50px; width:100%">'+
         '<tr>'+
-            '<td style="text-align:center">Status</td>'+
-            '<td style="text-align:center">'+d.status+'</td>'+
+            '<td style="text-align:center">Quantity</td>'+
+            '<td style="text-align:center">'+d.quantity+'</td>'+
+        '</tr>'+
+        '<tr>'+
+            '<td style="text-align:center">Description</td>'+
+            '<td style="text-align:center">'+d.description+'</td>'+
         '</tr>'+
         '<tr>'+
             '<td style="text-align:center">Action</td>'+
@@ -100,7 +104,7 @@ function format ( d ) {
     '</table>';
 }
 $(document).ready(function() {
-    var table =$('#dataTableHover').DataTable({
+    var table = $('#dataTableHover').DataTable({
     processing: true,
     serverSide: true,
     ajax: {
@@ -114,14 +118,14 @@ $(document).ready(function() {
                 "data":           null,
                 "defaultContent": ''
             },
-            { data: 'business_owner_name', name: 'business_owner_name' },
-            { data: 'business_name', name: 'business_name' },
-            { data: 'business_type', name: 'business_type' },
-            { data: 'username', name: 'username' },
-            { data: 'show_pwd', name: 'show_pwd' },
+            { data: 'service_img', name: 'service_img' },
+            { data: 'service_name', name: 'service_name' },
+            { data: 'service_cost', name: 'service_cost' },
+            { data: 'category_id', name: 'category_id' },
+            { data: 'sub_category_id', name: 'sub_category_id' },
         ],
     order: [[0, 'desc']]
-    })
+    });
     $('#dataTableHover tbody').on('click', 'td.details-control', function () {
         var tr = $(this).closest('tr');
         var row = table.row( tr );
@@ -145,7 +149,7 @@ $('body').on('click', '#delete', function () {
     if(confirm("Are You sure want to delete !")){
         $.ajax({
             type: "delete",
-            url: "{{ url('admin/vendors') }}"+'/'+id,
+            url: "{{ url('vendors/service') }}"+'/'+id,
             success: function (data) {
             var oTable = $('#dataTableHover').dataTable(); 
             oTable.fnDraw(false);

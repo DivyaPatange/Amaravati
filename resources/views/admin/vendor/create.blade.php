@@ -64,16 +64,6 @@
                     </div>
                     <div class="col-md-6">
                         <div class="form-group">
-                            <label for="gst_no">Service </label> <span  style="color:red" id="service_err"> </span>
-                            <select class="form-control" name="service[]" id="service" multiple>
-                                @foreach($services as $s)
-                                <option value="{{ $s->id }}">{{ $s->service_name }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="form-group">
                             <label for="">Aadhar Image</label>
                             <div class="custom-file">
                             <input type="file" name="aadhar_img" class="custom-file-input" id="customFile">
@@ -99,7 +89,6 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-6"></div>
                     <div class="col-md-6">
                         <div class="form-group">
                             <label for="password">Password</label> <span  style="color:red" id="pwd_err"> </span>

@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\Admin\Service;
 use App\Models\Admin\Category;
 
 class CategoryController extends Controller
@@ -16,32 +15,24 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        $categories = Category::where('status', 'Active')->where('parent_id', NULL)->get();
-        // dd($categories);
         $allCategory = Category::orderBy('id', 'DESC')->get();
         if(request()->ajax()) {
             return datatables()->of($allCategory)
-            ->addColumn('service_name', function($row){    
-                $service = Service::where('id', $row->service_id)->first();
-                if(!empty($service))
+            ->addColumn('status', function($row){    
+                if($row->status == "Active")
                 {
-                    return $service->service_name;
-                }                                                                                                                                                                                                                                                                                      
-            })
-            ->addColumn('parent_id', function($row){    
-                $category = Category::where('id', $row->parent_id)->first();
-                if(!empty($category))
-                {
-                    return $category->cat_name;
+                    return '<span class="badge badge-success">'.$row->status.'</span>';
+                }  
+                else{
+                    return '<span class="badge badge-danger">'.$row->status.'</span>';
                 }                                                                                                                                                                                                                                                                                      
             })
             ->addColumn('action', 'admin.category.action')
-            ->rawColumns(['action'])
+            ->rawColumns(['action', 'status'])
             ->addIndexColumn()
             ->make(true);
         }
-        $services = Service::where('status', 'Active')->get();
-        return view('admin.category.index', compact('services', 'categories'));
+        return view('admin.category.index');
     }
 
     /**
@@ -63,13 +54,8 @@ class CategoryController extends Controller
     public function store(Request $request)
     {
         $category = new Category();
-        $category->service_id = $request->service_name;
         $category->cat_name = $request->category;
         $category->status = $request->status;
-        if($request->is_parent == 0)
-        {
-            $category->parent_id = $request->parent_id;
-        }
         $category->save();
         return response()->json(['success' => 'Category Added Successfully!']);
     }
@@ -126,7 +112,7 @@ class CategoryController extends Controller
         $category = Category::where('id', $request->bid)->first();
         if (!empty($category)) 
         {
-            $data = array('id' =>$category->id, 'service_name' => $category->service_id ,'cat_name' =>$category->cat_name,'status' =>$category->status, 'parent_id' => $category->parent_id
+            $data = array('id' =>$category->id, 'cat_name' =>$category->cat_name,'status' =>$category->status
             );
         }else{
             $data =0;
@@ -137,18 +123,9 @@ class CategoryController extends Controller
     public function updateCategory(Request $request)
     {
         $category = Category::where('id', $request->id)->first();
-        if($request->is_parent == 0)
-        {
-            $parent_id = $request->parent_id;
-        }
-        else{
-            $parent_id = null;
-        }
         $input_data = array (
-            'service_id' => $request->service_name,
             'cat_name' => $request->category,
             'status' => $request->status,
-            'parent_id' => $parent_id,
         );
 
         Category::whereId($category->id)->update($input_data);

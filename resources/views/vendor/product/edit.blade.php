@@ -20,36 +20,36 @@
                 <h6 class="m-0 font-weight-bold text-primary">Add Product</h6>
             </div>
             <div class="card-body">
-                <form method="POST" id="submitForm" action="{{ route('vendor.product.store') }}" enctype="multipart/form-data">
+                <form method="POST" id="submitForm" action="{{ route('vendor.product.update', $product->id) }}" enctype="multipart/form-data">
                 @csrf
+                @method('PUT')
                 <div class="row">
                     <div class="col-md-6">
                         <div class="form-group">
-                            <label for="gst_no">Service </label> <span  style="color:red" id="service_err"> </span>
-                            <select class="form-control js-example" name="service" id="service">
-                                <option value="">Select Service</option>
-                                @for($i=0; $i < count($vendor); $i++)
-                                <?php 
-                                    $service = DB::table('services')->where('id', $vendor[$i])->first();
-                                ?>
-                                <option value="@if(!empty($service)){{ $service->id }}@endif">@if(!empty($service)){{ $service->service_name }}@endif</option>
-                                @endfor
+                            <label for="category">Category</label> <span  style="color:red" id="cat_err"> </span>
+                            <select class="form-control js-example" name="category" id="category">
+                                <option value="">Select Category</option>
+                                @foreach($categories as $c)
+                                <option value="{{ $c->id }}" @if($c->id == $product->category_id) Selected @endif>{{ $c->cat_name }}</option>
+                                @endforeach
                             </select>
                         </div>
                     </div>
+                    
                     <div class="col-md-6">
                         <div class="form-group">
-                            <label for="owner_name">Category</label> <span  style="color:red" id="cat_err"> </span>
-                            <select class="form-control js-example" name="category" id="category">
-                              
+                            <label for="sub_category">Sub-Category </label> <span  style="color:red" id="sub_err"> </span>
+                            <select class="form-control js-example" name="sub_category" id="sub_category">
+                               @foreach($subCategory as $s)
+                                <option value="{{ $s->id }}" @if($s->id == $product->sub_category_id) Selected @endif>{{ $s->sub_category }}</option>
+                               @endforeach
                             </select>
                         </div>
                     </div>
-                    <div id="parentCategory"></div>
                     <div class="col-md-6">
                         <div class="form-group">
                             <label for="product_name">Product Name</label> <span  style="color:red" id="name_err"> </span>
-                            <input type="text" name="product_name" class="form-control" id="product_name" placeholder="Enter Product Name">
+                            <input type="text" name="product_name" class="form-control" id="product_name" placeholder="Enter Product Name" value="{{ $product->product_name }}">
                         </div>
                     </div>
                     <div class="col-md-6">
@@ -60,23 +60,25 @@
                             <label class="custom-file-label" for="customFile">Choose file</label>
                             </div>
                         </div>
+                        <input type="hidden" name="hidden_image" value="{{$product->product_img}}">
+                        <a href="{{  URL::asset('ProductImg/' . $product->product_img) }}" target="_blank" class="mt-3"> Click to view</a>
                     </div>
                     <div class="col-md-6">
                         <div class="form-group">
                             <label for="selling_price">Selling Price</label> <span  style="color:red" id="sell_err"> </span>
-                            <input type="number" name="selling_price" class="form-control" id="selling_price" placeholder="Enter Selling Price">
+                            <input type="number" name="selling_price" class="form-control" id="selling_price" placeholder="Enter Selling Price" value="{{ $product->selling_price }}">
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="form-group">
                             <label for="cost_price">Cost Price</label> <span  style="color:red" id="cost_err"> </span>
-                            <input type="number" name="cost_price" class="form-control" id="cost_price" placeholder="Enter Cost Price">
+                            <input type="number" name="cost_price" class="form-control" id="cost_price" placeholder="Enter Cost Price" value="{{ $product->cost_price }}">
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="form-group">
                             <label for="busi_location">Product Description</label> <span  style="color:red" id="description_err"> </span>
-                            <textarea name="description" class="form-control" id="description" placeholder="Description"></textarea>
+                            <textarea name="description" class="form-control" id="description" placeholder="Description">{{ $product->description }}</textarea>
                         </div>
                     </div>
                     <div class="col-md-6">
@@ -84,14 +86,14 @@
                             <label for="busi_address">Status</label> <span  style="color:red" id="status_err"> </span>
                             <select class="form-control js-example" name="status" id="status">
                                 <option value="">Select Status</option>
-                                <option value="In-Stock">In-Stock</option>
-                                <option value="Out of Stock">Out of Stock</option>
+                                <option value="In-Stock" @if($product->status == "In-Stock") Selected @endif>In-Stock</option>
+                                <option value="Out of Stock" @if($product->status == "Out of Stock") Selected @endif>Out of Stock</option>
                             </select>
                         </div>
                     </div>
                 </div>
                 
-                <button type="button" id="submitButton" class="btn btn-primary">Submit</button>
+                <button type="button" id="submitButton" class="btn btn-primary">Update</button>
                 </form>
             </div>
         </div>
@@ -115,37 +117,30 @@ $(document).ready(function() {
 });
 
 $('body').on('click', '#submitButton', function () {
-    var service = $("#service").val();
+    var sub_category = $("#sub_category").val();
     var category = $("#category").val();
-    var product_name = $("#product_name").val();
     var product_img = $("#customFile").val();
     var selling_price = $("#selling_price").val();
     var cost_price = $("#cost_price").val();
     var description = $("#description").val();
     var status = $("#status").val();
     // alert(service);
-    if (service=="") {
-        $("#service_err").fadeIn().html("Required");
-        setTimeout(function(){ $("#service_err").fadeOut(); }, 3000);
-        $("#service").focus();
-        return false;
-    }
     if (category=="") {
         $("#cat_err").fadeIn().html("Required");
         setTimeout(function(){ $("#cat_err").fadeOut(); }, 3000);
         $("#category").focus();
         return false;
     }
+    if (sub_category=="") {
+        $("#sub_err").fadeIn().html("Required");
+        setTimeout(function(){ $("#sub_err").fadeOut(); }, 3000);
+        $("#sub_category").focus();
+        return false;
+    }
     if (product_name=="") {
         $("#name_err").fadeIn().html("Required");
         setTimeout(function(){ $("#name_err").fadeOut(); }, 3000);
         $("#product_name").focus();
-        return false;
-    }
-    if (product_img=="") {
-        $("#img_err").fadeIn().html("Required");
-        setTimeout(function(){ $("#img_err").fadeOut(); }, 3000);
-        $("#customFile").focus();
         return false;
     }
     if (selling_price=="") {
@@ -179,19 +174,19 @@ $('body').on('click', '#submitButton', function () {
 })
 </script>
 <script type=text/javascript>
-  $('#service').change(function(){
-  var serviceID = $(this).val();  
-    //   alert(serviceID);
-  if(serviceID){
+ $('#category').change(function(){
+  var categoryID = $(this).val();  
+    //   alert(categoryID);
+  if(categoryID){
     $.ajax({
       type:"GET",
-      url:"{{url('/vendors/get-category-list')}}?service_id="+serviceID,
-      success:function(res){        
-      if(res){
-        $("#category").empty();
-        $("#category").append('<option value="">Select Category</option>');
+      url:"{{url('/vendors/get-sub-category-list')}}?category_id="+categoryID,
+      success:function(res){     
+        if(res){
+        $("#sub_category").empty();
+        $("#sub_category").append('<option value="">Select Sub-Category</option>');
         $.each(res,function(key,value){
-          $("#category").append('<option value="'+key+'">'+value+'</option>');
+          $("#sub_category").append('<option value="'+key+'">'+value+'</option>');
         });
       
       }else{
@@ -199,29 +194,9 @@ $('body').on('click', '#submitButton', function () {
       }
       }
     });
-  }else{
-    $("#category").empty();
-  }   
-  });
-
-  $('#category').change(function(){
-  var categoryID = $(this).val();  
-//   alert(categoryID);
-  if(categoryID){
-    $.ajax({
-      type:"GET",
-      url:"{{url('/vendors/get-parentCategory-list')}}?category_id="+categoryID,
-      success:function(res){     
-          console.log(res != '');   
-        if(res != ''){
-            $('#parentCategory').addClass('col-md-6');
-            $("#parentCategory").html(res);
-        }
-        else{
-            $('#parentCategory').hide();
-        }
-      }
-    });
+  } 
+  else{
+    $("#sub_category").empty();
   }  
   });
 </script>

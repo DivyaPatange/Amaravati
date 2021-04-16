@@ -15,9 +15,6 @@ class CreateCategoriesTable extends Migration
     {
         Schema::create('categories', function (Blueprint $table) {
             $table->id();
-            $table->unsignedInteger('service_id');
-            $table->foreign('service_id')->references('id')->on('services');
-            $table->string('parent_id')->nullable();
             $table->string('cat_name');
             $table->enum('status', ['Active', 'Inactive']);
             $table->timestamps();

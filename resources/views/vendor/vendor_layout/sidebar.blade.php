@@ -31,25 +31,25 @@
     </div>
     </li>
     <li class="nav-item">
-    <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTable" aria-expanded="true"
-        aria-controls="collapseTable">
-        <i class="fas fa-fw fa-table"></i>
-        <span>Tables</span>
-    </a>
-    <div id="collapseTable" class="collapse" aria-labelledby="headingTable" data-parent="#accordionSidebar">
-        <div class="bg-white py-2 collapse-inner rounded">
-        <h6 class="collapse-header">Tables</h6>
-        <a class="collapse-item" href="simple-tables.html">Simple Tables</a>
-        <a class="collapse-item" href="datatables.html">DataTables</a>
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTable" aria-expanded="true"
+            aria-controls="collapseTable">
+            <i class="fas fa-fw fa-table"></i>
+            <span>Services</span>
+        </a>
+        <div id="collapseTable" class="collapse" aria-labelledby="headingTable" data-parent="#accordionSidebar">
+            <div class="bg-white py-2 collapse-inner rounded">
+            <h6 class="collapse-header">Tables</h6>
+            <a class="collapse-item" href="{{ route('vendor.service.create') }}">Add Service</a>
+            <a class="collapse-item" href="{{ route('vendor.service.index') }}">Service List</a>
+            </div>
         </div>
-    </div>
     </li>
-    <li class="nav-item">
-    <a class="nav-link" href="ui-colors.html">
-        <i class="fas fa-fw fa-palette"></i>
-        <span>UI Colors</span>
-    </a>
-    </li>
+    <!-- <li class="nav-item">
+        <a class="nav-link" href="ui-colors.html">
+            <i class="fas fa-fw fa-palette"></i>
+            <span>Service</span>
+        </a>
+    </li> -->
     <hr class="sidebar-divider">
     <div class="sidebar-heading">
     Examples

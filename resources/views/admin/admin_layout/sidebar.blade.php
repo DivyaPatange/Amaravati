@@ -57,17 +57,29 @@
             </div>
         </div>
     </li> -->
-    <li class="nav-item">
-        <a class="nav-link" href="{{ route('admin.services.index') }}">
-            <i class="fas fa-fw fa-palette"></i>
-            <span>Services</span>
-        </a>
-    </li>
     
     <li class="nav-item">
         <a class="nav-link" href="{{ route('admin.categories.index') }}">
             <i class="fas fa-fw fa-chart-area"></i>
             <span>Category</span>
+        </a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="{{ route('admin.sub-category.index') }}">
+            <i class="fas fa-fw fa-table"></i>
+            <span>Sub Category</span>
+        </a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="{{ route('admin.products.index') }}">
+            <i class="fas fa-fw fa-palette"></i>
+            <span>Product</span>
+        </a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="{{ route('admin.services.index') }}">
+            <i class="fas fa-fw fa-palette"></i>
+            <span>Services</span>
         </a>
     </li>
     <hr class="sidebar-divider">
