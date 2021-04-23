@@ -8,9 +8,14 @@ use App\Models\Admin\Category;
 use App\Models\Vendor\Service;
 use Auth;
 use App\Models\Admin\SubCategory;
+use App\Models\Vendor\AvailableDate;
 
 class ServiceController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth:vendor');
+    }
     /**
      * Display a listing of the resource.
      *
@@ -105,7 +110,56 @@ class ServiceController extends Controller
      */
     public function show($id)
     {
-        //
+        $service = Service::findorfail($id);
+        $availableDate = AvailableDate::where('vendor_id', Auth::guard('vendor')->user()->id)->where('service_id', $id)->get();
+        if(request()->ajax()) {
+            return datatables()->of($availableDate)
+            ->addColumn('total_quantity', function($row){    
+                if($row->total_quantity != Null)
+                {
+                    return $row->total_quantity;
+                }                               
+                else{
+                    return "";
+                }                                                                                                                                                                                                                         
+            })
+            ->addColumn('remain_quantity', function($row){    
+                if($row->remain_quantity != Null)
+                {
+                    return $row->remain_quantity;
+                }                               
+                else{
+                    return "";
+                }                                                                                                                                                                                                                                                                                       
+            })
+            ->addColumn('status', function($row){    
+                if($row->status == "Available")
+                {
+                    return '<span class="badge badge-success">'.$row->status.'</span>';
+                } 
+                elseif($row->status == "Booked"){
+                    return '<span class="badge badge-danger">'.$row->status.'</span>';
+                } 
+                else{
+                    return '<span class="badge badge-warning">'.$row->status.'</span>';
+                }                                                                                                                                                                                                                                                                                       
+            })
+            ->addColumn('action', function($row){
+                return '<a href="javascript:void(0)" class="btn btn-danger btn-sm" id="delete" data-id="'.$row->id.'">
+                            <i class="fas fa-trash"></i>
+                        </a>';
+            })
+            ->rawColumns(['action', 'total_quantity', 'remain_quantity', 'status'])
+            ->addIndexColumn()
+            ->make(true);
+        }
+        return view('vendor.service.show', compact('service', 'availableDate'));
+    }
+
+    public function getDate($id)
+    {
+        $availableDate = AvailableDate::where('vendor_id', Auth::guard('vendor')->user()->id)->where('service_id', $id)->pluck("available_date");
+        return response()->json($availableDate);
     }
 
     /**
@@ -166,5 +220,31 @@ class ServiceController extends Controller
         unlink(public_path('ServiceImg/'.$service->service_img));
         $service->delete();
         return response()->json(['success' => 'Service Deleted Successfully!']);
+    }
+
+    public function storeAvailableDate(Request $request)
+    {
+        $availableDate = $request->date;
+        $explodeDate = explode(",", $availableDate);
+        for($i=0; $i < count($explodeDate); $i++)
+        {
+            $markDate = AvailableDate::create([
+                'vendor_id' => Auth::guard('vendor')->user()->id,
+                'service_id' => $request->service,
+                'available_date' => date("Y-m-d", strtotime($explodeDate[$i])),
+                'total_quantity' => $request->quantity,
+                'remain_quanity' => $request->quantity,
+                'status' => "Available",
+            ]);
+        }
+        return response()->json(['success' => 'Dates Marked Successfully!']);
+        // return count($explodeDate);
+    }
+
+    public function deleteAvailableDate($id)
+    {
+        $availableDate = AvailableDate::findorfail($id);
+        $availableDate->delete();
+        return response()->json(['success' => 'Date Deleted Successfully!']);
     }
 }

@@ -14,6 +14,9 @@ use App\Http\Controllers\Admin\SubCategoryController;
 use App\Http\Controllers\Vendor\ProductController;
 use App\Http\Controllers\Vendor\ServiceController;
 
+use App\Http\Controllers\Auth\GoogleController;
+use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\Auth\RegisterController;
 
 /*
 |--------------------------------------------------------------------------
@@ -27,7 +30,10 @@ use App\Http\Controllers\Vendor\ServiceController;
 */
 
 Route::get('/', function () {
-    return view('admin.login');
+    return view('index');
+});
+Route::get('category', function () {
+    return view('category');
 });
 
 Route::get('/clear-cache', function () {
@@ -51,6 +57,12 @@ Route::get('/seed', function () {
     $exitCode = Artisan::call('db:seed');
     return 'DONE'; //Return anything
 });
+
+Route::get('auth/google', [GoogleController::class, 'redirectToGoogle']);
+Route::get('auth/google/callback', [GoogleController::class, 'handleGoogleCallback']);
+Route::post('/submit-login-form', [LoginController::class, 'submitLoginForm'])->name('submit-login-form');
+Route::post('/submit-register-form', [RegisterController::class, 'submitRegisterForm'])->name('submit-register-form');
+Route::post('/submit-otp-form', [RegisterController::class, 'submitOtpForm'])->name('submit-otp-form');
 
 Route::prefix('admin')->name('admin.')->group(function() {
     // Admin Authentication Route
@@ -85,4 +97,7 @@ Route::prefix('vendors')->name('vendor.')->group(function() {
     Route::resource('product', ProductController::class);
     Route::get('/get-sub-category-list', [ProductController::class, 'getSubCategoryList']);
     Route::resource('/service', ServiceController::class);
+    Route::post('/available-date/store', [ServiceController::class, 'storeAvailableDate'])->name('available-date.store');
+    Route::get('/get-date/{id}', [ServiceController::class, 'getDate'])->name('service.getDate');
+    Route::delete('/available-date/{id}', [ServiceController::class, 'deleteAvailableDate']);
 });

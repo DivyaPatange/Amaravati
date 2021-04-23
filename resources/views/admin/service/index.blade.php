@@ -125,13 +125,17 @@ $(document).ready(function() {
     $('.js-example').select2();
 
 });
-var SITEURL = '{{ route('admin.products.index')}}';
+var SITEURL = '{{ route('admin.services.index')}}';
 function format ( d ) {
     // `d` is the original data object for the row
     return '<table cellpadding="5" cellspacing="0" border="0" style="padding-left:50px; width:100%">'+
         '<tr>'+
             '<td style="text-align:center">Sub-Category</td>'+
             '<td style="text-align:center">'+d.sub_category_id+'</td>'+
+        '</tr>'+
+        '<tr>'+
+            '<td style="text-align:center">Available Dates</td>'+
+            '<td style="text-align:center">'+d.action+'</td>'+
         '</tr>'+
     '</table>';
 }

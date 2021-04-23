@@ -4,11 +4,12 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\Admin\Service;
+use App\Models\Vendor\Service;
 use App\Models\Admin\Category;
 use App\Models\Admin\SubCategory;
 use DB;
 use App\Models\Admin\Vendor;
+use App\Models\Vendor\AvailableDate;
 
 class ServiceController extends Controller
 {
@@ -59,7 +60,8 @@ class ServiceController extends Controller
                     return $subCategory->sub_category;
                     }                                                                                                                                                                                                                                                                                       
                 })
-                ->rawColumns(['service_img', 'vendor_id', 'sub_category_id', 'category_id'])
+                ->addColumn('action', 'admin.service.action')
+                ->rawColumns(['service_img', 'vendor_id', 'sub_category_id', 'category_id', 'action'])
                 ->addIndexColumn()
                 ->make(true);
         }
@@ -100,7 +102,50 @@ class ServiceController extends Controller
      */
     public function show($id)
     {
-        //
+        $service = Service::findorfail($id);
+        $availableDate = AvailableDate::where('vendor_id', $service->vendor_id)->where('service_id', $id)->get();
+        if(request()->ajax()) {
+            return datatables()->of($availableDate)
+            ->addColumn('total_quantity', function($row){    
+                if($row->total_quantity != Null)
+                {
+                    return $row->total_quantity;
+                }                               
+                else{
+                    return "";
+                }                                                                                                                                                                                                                         
+            })
+            ->addColumn('remain_quantity', function($row){    
+                if($row->remain_quantity != Null)
+                {
+                    return $row->remain_quantity;
+                }                               
+                else{
+                    return "";
+                }                                                                                                                                                                                                                                                                                       
+            })
+            ->addColumn('status', function($row){    
+                if($row->status == "Available")
+                {
+                    return '<span class="badge badge-success">'.$row->status.'</span>';
+                } 
+                elseif($row->status == "Booked"){
+                    return '<span class="badge badge-danger">'.$row->status.'</span>';
+                } 
+                else{
+                    return '<span class="badge badge-warning">'.$row->status.'</span>';
+                }                                                                                                                                                                                                                                                                                       
+            })
+            ->addColumn('action', function($row){
+                return '<a href="javascript:void(0)" class="btn btn-danger btn-sm" id="delete" data-id="'.$row->id.'">
+                            <i class="fas fa-trash"></i>
+                        </a>';
+            })
+            ->rawColumns(['action', 'total_quantity', 'remain_quantity', 'status'])
+            ->addIndexColumn()
+            ->make(true);
+        }
+        return view('admin.service.show', compact('service', 'availableDate'));
     }
 
     /**
