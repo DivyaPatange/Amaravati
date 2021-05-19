@@ -1,76 +1,67 @@
-<div id="footer">
-      <div class="container">
-        <div class="row">
-          <div class="col-lg-3 col-md-6">
-            <h4 class="mb-3">Pages</h4>
-            <ul class="list-unstyled">
-              <li><a href="text.html">About us</a></li>
-              <li><a href="text.html">Terms and conditions</a></li>
-              <li><a href="faq.html">FAQ</a></li>
-              <li><a href="contact.html">Contact us</a></li>
-            </ul>
-            <hr>
-            <h4 class="mb-3">User section</h4>
-            <ul class="list-unstyled">
-              <li><a href="#" data-toggle="modal" data-target="#login-modal">Login</a></li>
-              <li><a href="register.html">Regiter</a></li>
-            </ul>
-          </div>
-          <!-- /.col-lg-3-->
-          <div class="col-lg-3 col-md-6">
-            <h4 class="mb-3">Top categories</h4>
-            <h5>Men</h5>
-            <ul class="list-unstyled">
-              <li><a href="category.html">T-shirts</a></li>
-              <li><a href="category.html">Shirts</a></li>
-              <li><a href="category.html">Accessories</a></li>
-            </ul>
-            <h5>Ladies</h5>
-            <ul class="list-unstyled">
-              <li><a href="category.html">T-shirts</a></li>
-              <li><a href="category.html">Skirts</a></li>
-              <li><a href="category.html">Pants</a></li>
-              <li><a href="category.html">Accessories</a></li>
-            </ul>
-          </div>
-          <!-- /.col-lg-3-->
-          <div class="col-lg-3 col-md-6">
-            <h4 class="mb-3">Where to find us</h4>
-            <p><strong>Obaju Ltd.</strong><br>13/25 New Avenue<br>New Heaven<br>45Y 73J<br>England<br><strong>Great Britain</strong></p><a href="contact.html">Go to contact page</a>
-            <hr class="d-block d-md-none">
-          </div>
-          <!-- /.col-lg-3-->
-          <div class="col-lg-3 col-md-6">
-            <h4 class="mb-3">Get the news</h4>
-            <p class="text-muted">Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas.</p>
-            <form>
-              <div class="input-group">
-                <input type="text" class="form-control"><span class="input-group-append">
-                  <button type="button" class="btn btn-outline-secondary">Subscribe!</button></span>
-              </div>
-              <!-- /input-group-->
-            </form>
-            <hr>
-            <h4 class="mb-3">Stay in touch</h4>
-            <p class="social"><a href="#" class="facebook external"><i class="fa fa-facebook"></i></a><a href="#" class="twitter external"><i class="fa fa-twitter"></i></a><a href="#" class="instagram external"><i class="fa fa-instagram"></i></a><a href="#" class="gplus external"><i class="fa fa-google-plus"></i></a><a href="#" class="email external"><i class="fa fa-envelope"></i></a></p>
-          </div>
-          <!-- /.col-lg-3-->
-        </div>
-        <!-- /.row-->
-      </div>
-      <!-- /.container-->
-    </div>
-    <div id="copyright">
-      <div class="container">
-        <div class="row">
-          <div class="col-lg-6 mb-2 mb-lg-0">
-            <p class="text-center text-lg-left">©2021 BookFatafat.com</p>
-          </div>
-          <div class="col-lg-6">
-            <p class="text-center text-lg-right">design by <a href="http://iceico.in/">iceico Technologies Pvt. Ltd</a>
-              <!-- If you want to remove this backlink, pls purchase an Attribution-free License @ https://bootstrapious.com/p/obaju-e-commerce-template. Big thanks!-->
-            </p>
-          </div>
-        </div>
-      </div>
-    </div>
+<!-- footer -->
+<div class="footer">
+	<div class="container">
+		<div class="col-md-3 footer-left">
+			<h2><a href="index.html"><img src="{{ asset('frontasset/images/122 (1).png') }}" alt=" " /></a></h2>
+			<p>Neque porro quisquam est, qui dolorem ipsum quia dolor
+			sit amet, consectetur, adipisci velit, sed quia non 
+			numquam eius modi tempora incidunt ut labore 
+			et dolore magnam aliquam quaerat voluptatem.</p>
+		</div>
+		<div class="col-md-9 footer-right">
+			<div class="col-sm-6 newsleft">
+				<h3>SIGN UP FOR NEWSLETTER !</h3>
+			</div>
+			<div class="col-sm-6 newsright">
+				<form>
+					<input type="text" value="Email" onfocus="this.value = '';" onblur="if (this.value == '') {this.value = 'Email';}" required="">
+					<input type="submit" value="Submit">
+				</form>
+			</div>
+			<div class="clearfix"></div>
+			<div class="sign-grds">
+				<div class="col-md-4 sign-gd">
+					<h4>Information</h4>
+					<ul>
+						<li><a href="{{ url('/') }}">Home</a></li>
+						<li><a href="mens.php">Men's Wear</a></li>
+						<li><a href="womens.php">Women's Wear</a></li>
+						<li><a href="electronics.php">Electronics</a></li>
+						<li><a href="codes.php">Short Codes</a></li>
+						<li><a href="contact.php">Contact</a></li>
+					</ul>
+				</div>
+				
+				<div class="col-md-4 sign-gd-two">
+					<h4>Store Information</h4>
+					<ul>
+						<li><i class="glyphicon glyphicon-map-marker" aria-hidden="true"></i>Address : 1234k Avenue, 4th block, <span>Newyork City.</span></li>
+						<li><i class="glyphicon glyphicon-envelope" aria-hidden="true"></i>Email : <a href="mailto:info@example.com">info@example.com</a></li>
+						<li><i class="glyphicon glyphicon-earphone" aria-hidden="true"></i>Phone : +1234 567 567</li>
+					</ul>
+				</div>
+				<div class="col-md-4 sign-gd flickr-post">
+					<h4>Flickr Posts</h4>
+					
+
+
+					<ul>
+						<li><a href="single.php"><img src="{{ asset('frontasset/images/b15.jpg') }}" alt=" " class="img-responsive" /></a></li>
+						<li><a href="single.php"><img src="{{ asset('frontasset/images/b16.jpg') }}" alt=" " class="img-responsive" /></a></li>
+						<li><a href="single.php"><img src="{{ asset('frontasset/images/b17.jpg') }}" alt=" " class="img-responsive" /></a></li>
+						<li><a href="single.php"><img src="{{ asset('frontasset/images/b18.jpg') }}" alt=" " class="img-responsive" /></a></li>
+						<li><a href="single.php"><img src="{{ asset('frontasset/images/b15.jpg') }}" alt=" " class="img-responsive" /></a></li>
+						<li><a href="single.php"><img src="{{ asset('frontasset/images/b16.jpg') }}" alt=" " class="img-responsive" /></a></li>
+						<li><a href="single.php"><img src="{{ asset('frontasset/images/b17.jpg') }}" alt=" " class="img-responsive" /></a></li>
+						<li><a href="single.php"><img src="{{ asset('frontasset/images/b18.jpg') }}" alt=" " class="img-responsive" /></a></li>
+						<li><a href="single.php"><img src="{{ asset('frontasset/images/b15.jpg') }}" alt=" " class="img-responsive" /></a></li>
+					</ul>
+				</div>
+				<div class="clearfix"></div>
+			</div>
+		</div>
+		<div class="clearfix"></div>
+		<p class="copy-right">&copy 2021 Bookfatafat. All rights reserved | Design by <a href="http://iceico.in/">Iceico Technologies Pvt. Ltd</a></p>
+	</div>
+</div>
+<!-- //footer -->

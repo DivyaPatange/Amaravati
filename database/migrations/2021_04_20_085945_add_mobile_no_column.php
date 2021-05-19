@@ -18,6 +18,7 @@ class AddMobileNoColumn extends Migration
             $table->string('mobile_no')->nullable();
             $table->string('otp')->nullable();
             $table->boolean('verified')->default(0);
+            $table->string('avatar')->nullable();
         });
     }
 
@@ -33,6 +34,7 @@ class AddMobileNoColumn extends Migration
             $table->dropColumn('mobile_no');
             $table->dropColumn('otp');
             $table->dropcolumn('verified');
+            $table->dropColumn('avatar');
         });
     }
 }

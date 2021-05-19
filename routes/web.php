@@ -18,6 +18,9 @@ use App\Http\Controllers\Auth\GoogleController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 
+use App\Http\Controllers\DesignController;
+use App\Http\Controllers\CartController;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -30,10 +33,26 @@ use App\Http\Controllers\Auth\RegisterController;
 */
 
 Route::get('/', function () {
-    return view('index');
+    return view('dashboard');
 });
-Route::get('category', function () {
-    return view('category');
+Route::get('/clothing', function () {
+    return view('/clothing');
+});
+Route::get('/detail_view', function () {
+    return view('/detail_view');
+});
+Route::get('/womens', function () {
+    return view('/womens');
+});
+Route::get('/electronics', function () {
+    return view('/electronics');
+});
+Route::get('/contact', function () {
+    return view('/contact');
+});
+Route::get('/checkout', function () {
+    $cartCollection = \Cart::getContent();
+    return view('/checkout', compact('cartCollection'));
 });
 
 Route::get('/clear-cache', function () {
@@ -63,6 +82,15 @@ Route::get('auth/google/callback', [GoogleController::class, 'handleGoogleCallba
 Route::post('/submit-login-form', [LoginController::class, 'submitLoginForm'])->name('submit-login-form');
 Route::post('/submit-register-form', [RegisterController::class, 'submitRegisterForm'])->name('submit-register-form');
 Route::post('/submit-otp-form', [RegisterController::class, 'submitOtpForm'])->name('submit-otp-form');
+
+Route::post('/add', [CartController::class, 'add'])->name('cart.store');
+Route::post('/update', [CartController::class, 'update'])->name('cart.update');
+Route::post('/remove', [CartController::class, 'remove'])->name('cart.remove');
+Route::post('/clear', [CartController::class, 'clear'])->name('cart.clear');
+Route::post('filter-index-product', [DesignController::class, 'filterIndexProduct'])->name('filter.index-product');
+Route::get('product-view/{id}', [DesignController::class, 'singleProduct'])->name('single.product');
+Route::get('/products', [DesignController::class, 'allProducts']);
+Route::post('filter-product', [DesignController::class, 'filterProduct'])->name('filter.product');
 
 Route::prefix('admin')->name('admin.')->group(function() {
     // Admin Authentication Route

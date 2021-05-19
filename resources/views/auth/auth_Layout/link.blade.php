@@ -1,18 +1,16 @@
- <!-- Bootstrap CSS-->
- <link rel="stylesheet" href="{{ asset('frontasset/vendor/bootstrap/css/bootstrap.min.css') }}">
-<!-- Font Awesome CSS-->
-<link rel="stylesheet" href="{{ asset('frontasset/vendor/font-awesome/css/font-awesome.min.css') }}">
-<!-- Google fonts - Roboto -->
-<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,700">
-<!-- owl carousel-->
-<link rel="stylesheet" href="{{ asset('frontasset/vendor/owl.carousel/assets/owl.carousel.css') }}">
-<link rel="stylesheet" href="{{ asset('frontasset/vendor/owl.carousel/assets/owl.theme.default.css') }}">
-<!-- theme stylesheet-->
-<link rel="stylesheet" href="{{ asset('frontasset/css/style.default.css') }}" id="theme-stylesheet">
-<!-- Custom stylesheet - for your changes-->
-<link rel="stylesheet" href="{{ asset('frontasset/css/custom.css') }}">
-<!-- Favicon-->
-<link rel="shortcut icon" href="{{ asset('frontasset/favicon.png') }}">
-<!-- Tweaks for older IEs--><!--[if lt IE 9]>
-    <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
-    <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script><![endif]-->
+<!-- //for-mobile-apps -->
+<link href="{{ asset('frontasset/css/bootstrap.css') }}" rel="stylesheet" type="text/css" media="all" />
+<!-- pignose css -->
+<link href="{{ asset('frontasset/css/pignose.layerslider.css') }}" rel="stylesheet" type="text/css" media="all" />
+
+
+<link rel="stylesheet" href="{{ asset('frontasset/css/flexslider.css') }}" type="text/css" media="screen" />
+
+
+<!-- //pignose css -->
+<link href="{{ asset('frontasset/css/style.css') }}" rel="stylesheet" type="text/css" media="all" />
+<!-- //for bootstrap working -->
+<link href='//fonts.googleapis.com/css?family=Montserrat:400,700' rel='stylesheet' type='text/css'>
+<link href='//fonts.googleapis.com/css?family=Lato:400,100,100italic,300,300italic,400italic,700,900,900italic,700italic' rel='stylesheet' type='text/css'>
+
+
