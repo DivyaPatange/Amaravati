@@ -20,6 +20,7 @@ use App\Http\Controllers\Auth\RegisterController;
 
 use App\Http\Controllers\DesignController;
 use App\Http\Controllers\CartController;
+use App\Http\Controllers\User\OrderController;
 
 /*
 |--------------------------------------------------------------------------
@@ -91,6 +92,14 @@ Route::post('filter-index-product', [DesignController::class, 'filterIndexProduc
 Route::get('product-view/{id}', [DesignController::class, 'singleProduct'])->name('single.product');
 Route::get('/products', [DesignController::class, 'allProducts']);
 Route::post('filter-product', [DesignController::class, 'filterProduct'])->name('filter.product');
+Route::post('/placeOrder', [OrderController::class, 'placedOrder'])->name('placed.order');
+Route::get('/orderDetails/{id}', [OrderController::class, 'orderDetails'])->name('order.details');
+Route::post('/user-info/store', [OrderController::class, 'storeUserInfo'])->name('save.user-info');
+Route::post('/payment/{id}', [OrderController::class, 'payment'])->name('payment');
+Route::post('/success', [OrderController::class, 'paymentSuccess'])->name('success');
+Route::get('/payment-success/{id}', [OrderController::class, 'paymentDetail'])->name('payment-success');
+Route::get('/placed-order', [OrderController::class, 'placedOrderDetails']);
+Route::get('/payment-details', [OrderController::class, 'userPaymentDetails']);
 
 Route::prefix('admin')->name('admin.')->group(function() {
     // Admin Authentication Route

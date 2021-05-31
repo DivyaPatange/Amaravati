@@ -43,7 +43,7 @@ class LoginController extends Controller
 
     public function submitLoginForm(Request $request)
     {
-        $finduser = User::where('mobile_no', $request->mobile_no)->where('password', $request->password)->first();
+        $finduser = User::where('mobile_no', $request->mobile_no)->first();
         if($finduser){
             if($finduser->verified == 1)
             {

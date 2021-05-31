@@ -9,7 +9,7 @@
   <meta name="author" content="">
   <meta name="csrf-token" content="{{ csrf_token() }}">
   <link href="img/logo/logo.png" rel="icon">
-  <title>RuangAdmin - @yield('title')</title>
+  <title>Book Fatafat - @yield('title')</title>
   @include('admin.admin_layout.stylesheet')
   @yield('customcss')
 </head>

@@ -135,6 +135,7 @@ $('body').on('click', '#submitLogin', function () {
             if(returndata.success){
             $('#myModal4').modal('toggle');
             toastr.success(returndata.success);
+            location.reload();
             }
             else{
             toastr.error(returndata.error);

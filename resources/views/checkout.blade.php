@@ -66,7 +66,9 @@ input[type="number"] {
   -moz-appearance: textfield;
   -webkit-appearance: none;
 }
-
+.checkout-right-basket .proceed{
+	background:#ff0000;
+}
 </style>
 @endsection
 @section('content')
@@ -142,6 +144,7 @@ input[type="number"] {
 				
 				<div class="checkout-right-basket animated wow slideInRight" data-wow-delay=".5s">
 					<a href="{{ url('/')}}"><span class="glyphicon glyphicon-menu-left" aria-hidden="true"></span>Back To Shopping</a>
+					<a href="@auth {{ url('/home') }} @else # @endauth" @auth @else data-toggle="modal" data-target="#myModal4" @endauth class="proceed">Proceed To Checkout</a>
 				</div>
 				<div class="checkout-left-basket animated wow slideInLeft" data-wow-delay=".5s">
 					<h4>Shopping basket</h4>

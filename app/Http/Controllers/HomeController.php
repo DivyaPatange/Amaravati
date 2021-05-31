@@ -23,6 +23,7 @@ class HomeController extends Controller
      */
     public function index()
     {
-        return view('home');
+        $cartCollection = \Cart::getContent();
+        return view('user.dashboard', compact('cartCollection'));
     }
 }
